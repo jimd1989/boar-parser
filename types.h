@@ -25,4 +25,4 @@ typedef struct ArgVal {
   char  * s;
 } ArgVal;
 
-void printArgTypes(ArgType *, const int);
+char * showArgType(ArgType);

@@ -144,10 +144,12 @@ parse(Parse *e) {
   s = e->head;
   if (*s == '\0' || *s == '#') { return; }
   s = parseFunc(e);
+  if (as[0].i == F_UNKNOWN) { return; }
   g = e->sig;
   t = strtok(s, " \t");
-  for (; n < g->count; n++) {
+  for (; n < g->count || t != NULL; n++) {
     if (n >= SIZE_ARGS)                          { error(e); return; }
+    if (n >= g->count)                           { error(e); return; }
     if (t == NULL && n < g->required)            { error(e); return; }
     if (t == NULL)                               { backup(as, g, n); continue; }
     tg = parseType(t);

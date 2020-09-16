@@ -204,3 +204,5 @@ static const Sig SIG_COLON[SIZE_FS] = {
   SIG_NULL, /* y: */
   SIG_NULL  /* z: */
 };
+
+char * showSignature(Sig, char *);
