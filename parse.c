@@ -12,12 +12,15 @@
 
 static bool isModifier(const char);
 static bool isNotFunc(const char);
+static bool isBlank(const char);
 static char *parseFunc(Parse *);
 static ArgType parseType(char *);
 static bool isValid(ArgType, ArgType);
 static void reset(Parse *);
 static void error(Parse *);
 static char *clearSpace(char *);
+static bool isUnknown(ArgVal *as);
+static bool isAny(Sig);
 static void backup(ArgVal *, const Sig *, int);
 static bool toF(char *, ArgVal *);
 static bool toI(char *, ArgVal *);
@@ -42,24 +45,29 @@ isNotFunc(const char c) {
   return ((int)c < 0 || (int)c >= SIZE_FS);
 }
 
+static bool
+isBlank(const char c) {
+  return (c == '\0' || c == '#');
+}
+
 static char *
-parseFunc(Parse *e) {
+parseFunc(Parse *p) {
   char f1  = '\0';
   char f2  = '\0';
-  char *s  = e->head;
+  char *s  = p->head;
   ArgVal a = {0};
   const Sig *g = NULL;
   if (*s != '\0')                   { f1 = *s; s++; }
   if (*s != '\0' && isModifier(*s)) { f2 = *s; s++; }
-  e->head = s;
+  p->head = s;
   f1 -= (int)'A';
   if (isNotFunc(f1))  { a.i = F_UNKNOWN;         g = &SIG_PURE[SIG_NULL_POS]; }
   else if (f2 == '.') { a.i = F_PERIOD[(int)f1]; g = &SIG_PERIOD[(int)f1]; }
   else if (f2 == ':') { a.i = F_COLON[(int)f1];  g = &SIG_COLON[(int)f1]; }
   else                { a.i = F_PURE[(int)f1];   g = &SIG_PURE[(int)f1]; }
-  e->args[0] = a;
-  e->sig = g;
-  return e->head;
+  p->args[0] = a;
+  p->sig = g;
+  return p->head;
 }
 
 static ArgType
@@ -89,21 +97,31 @@ isValid(ArgType tx, ArgType tg) {
 }
 
 static void
-reset(Parse *e) {
-  e->head = e->buf;
-  e->args[0].i = F_BLANK;
-  e->buf[strcspn(e->buf, "\n")] = '\0';
+reset(Parse *p) {
+  p->buf[strcspn(p->buf, "\n")] = '\0';
+  p->head = p->buf;
+  p->args[0].i = F_BLANK;
 }
 
 static void
-error(Parse *e) {
-  e->args[0].i = F_ERROR;
+error(Parse *p) {
+  p->args[0].i = F_ERROR;
 }
 
 static char *
 clearSpace(char *s) {
   while (*s != '\0' && isspace((int)*s)) { s++; }
   return s;
+}
+
+static bool
+isUnknown(ArgVal *as) {
+  return (as[0].i == F_UNKNOWN);
+}
+
+static bool
+isAny(Sig g) {
+  return (g.count == 1 && g.args[0] == ARG_ANY);
 }
 
 static void
@@ -132,29 +150,29 @@ parseArg(ArgVal *a, ArgType tx, ArgType tg, char *s) {
 }
 
 void
-parse(Parse *e) {
+parse(Parse *p) {
   unsigned int n = 0;
-  char *s = NULL;
-  char *t = NULL;
+  char *s, *t = NULL;
   ArgType tg = ARG_NIL;
-  ArgVal *as = e->args;
+  ArgVal *as = p->args;
   const Sig *g = NULL;
-  reset(e);
-  e->head = clearSpace(e->head);
-  s = e->head;
-  if (*s == '\0' || *s == '#') { return; }
-  s = parseFunc(e);
-  if (as[0].i == F_UNKNOWN) { return; }
-  g = e->sig;
+  reset(p);
+  p->head = clearSpace(p->head);
+  s = p->head;
+  if (isBlank(*s))                               { return; }
+  s = parseFunc(p);
+  if (isUnknown(as))                             { return; }
+  g = p->sig;
+  if (isAny(*g))                                 { as[1].s = s; return; }
   t = strtok(s, " \t");
   for (; n < g->count || t != NULL; n++) {
-    if (n >= SIZE_ARGS)                          { error(e); return; }
-    if (n >= g->count)                           { error(e); return; }
-    if (t == NULL && n < g->required)            { error(e); return; }
+    if (n >= SIZE_ARGS)                          { error(p); return; }
+    if (n >= g->count)                           { error(p); return; }
+    if (t == NULL && n < g->required)            { error(p); return; }
     if (t == NULL)                               { backup(as, g, n); continue; }
     tg = parseType(t);
-    if (! isValid(g->args[n], tg))               { error(e); return; }
-    if (! parseArg(&as[n+1], g->args[n], tg, t)) { error(e); return; }
+    if (! isValid(g->args[n], tg))               { error(p); return; }
+    if (! parseArg(&as[n+1], g->args[n], tg, t)) { error(p); return; }
     t = strtok(NULL, " \t");
   }
 }

@@ -15,6 +15,7 @@ char *
 showSignature(Sig g, char *s) {
   unsigned int n = 0;
   memset(s, 0, SIZE_LINE);
+  if (g.count == 0) { return "nothing "; }
   for (; n < g.count; n++) {
     if (n == g.required) { cat(s, "| "); }
     cat(s, showArgType(g.args[n]));
