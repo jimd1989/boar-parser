@@ -23,7 +23,7 @@ int
 main(void) {
   Parse p = {{0}};
   warnx("Welcome. You can exit at any time by pressing q + enter.");
-  while(fgets(p.buf, SIZE_LINE, stdin) != NULL) {
+  while(fgets(p.buf, SIZE_IN, stdin) != NULL) {
     parse(&p);
     errorCheck(&p);
   }
