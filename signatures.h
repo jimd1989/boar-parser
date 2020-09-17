@@ -17,6 +17,7 @@ typedef struct Sig {
 #define SIG_NULL_POS 26
 
 static const ArgVal SIG_ZERO_DEFS[1] = {{0}};
+static const ArgVal SIG_ZERO_TWO_DEFS[2] = {{0}, {0}};
 static const ArgVal SIG_ONE_DEFS[1] = {{NUM_ONE}};
 
 static const ArgType SIG_ANY_ARGS[1] = {ARG_ANY};
@@ -28,14 +29,17 @@ static const ArgType SIG_UFLOAT_ARGS[1] = {ARG_UFLOAT};
 static const ArgType SIG_UINT_UFLOAT_ARGS[2] = {ARG_UINT, ARG_UFLOAT};
 #define SIG_UINT_UFLOAT {2, 2, SIG_UINT_UFLOAT_ARGS, NULL}
 
+static const ArgType SIG_UI_UF_UF_ARGS[3] = {ARG_UINT, ARG_UFLOAT, ARG_UFLOAT};
+#define SIG_UINT_STEREO {3, 2, SIG_UI_UF_UF_ARGS, SIG_ZERO_DEFS} 
+
 static const ArgType SIG_UINT_TEXT_ARGS[2] = {ARG_UINT, ARG_TEXT};
 #define SIG_UINT_TEXT {2, 2, SIG_UINT_TEXT_ARGS, NULL}
 
 static const ArgType SIG_ENV_ASSIGN_ARGS[3] = {ARG_UINT, ARG_UINT, ARG_UFLOAT};
 #define SIG_ENV_ASSIGN {3, 2, SIG_ENV_ASSIGN_ARGS, SIG_ONE_DEFS}
 
-static const
-ArgType SIG_MODULATE_ARGS[4] = {ARG_UINT, ARG_UINT, ARG_UFLOAT, ARG_TEXT};
+static const ArgType
+SIG_MODULATE_ARGS[4] = {ARG_UINT, ARG_UINT, ARG_UFLOAT, ARG_TEXT};
 #define SIG_MODULATE {4, 3, SIG_MODULATE_ARGS, SIG_ZERO_DEFS}
 
 static const ArgType SIG_NOTE_ON_ARGS[3] = {ARG_UINT, ARG_UINT, ARG_UINT};
@@ -46,11 +50,13 @@ static const ArgType SIG_NOTE_OFF_ARGS[2] = {ARG_UINT, ARG_UINT};
 static const ArgVal SIG_NOTE_OFF_DEFS[1] = {{1}};
 #define SIG_NOTE_OFF {2, 1, SIG_NOTE_OFF_ARGS, SIG_NOTE_OFF_DEFS}
 
-static const ArgType SIG_AMPLITUDE_ARGS[3] = {ARG_UINT, ARG_UFLOAT, ARG_UFLOAT};
-#define SIG_AMPLITUDE {3, 2, SIG_AMPLITUDE_ARGS, SIG_ZERO_DEFS}
+static const ArgType
+SIG_AMPLITUDE_ARGS[4] = {ARG_UINT, ARG_UFLOAT, ARG_UFLOAT, ARG_FLOAT};
+#define SIG_AMPLITUDE {4, 2, SIG_AMPLITUDE_ARGS, SIG_ZERO_TWO_DEFS}
 
-static const ArgType SIG_PITCH_ARGS[3] = {ARG_UINT, ARG_UFLOAT, ARG_TEXT};
-#define SIG_PITCH {3, 2, SIG_PITCH_ARGS, SIG_ZERO_DEFS}
+static const ArgType
+SIG_PITCH_ARGS[4] = {ARG_UINT, ARG_UFLOAT, ARG_UFLOAT, ARG_TEXT};
+#define SIG_PITCH {4, 2, SIG_PITCH_ARGS, SIG_ZERO_TWO_DEFS}
 
 static const Sig SIG_PURE[SIZE_FS] = {
   SIG_UINT_TEXT,       /* A */
@@ -72,7 +78,7 @@ static const Sig SIG_PURE[SIZE_FS] = {
   SIG_NULL,            /* Q */
   SIG_UINT_TEXT,       /* R */
   SIG_NULL,            /* S */
-  SIG_UINT_UFLOAT,     /* T */
+  SIG_UINT_STEREO,     /* T */
   SIG_NULL,            /* U */
   SIG_NULL,            /* V */
   SIG_NULL,            /* W */
@@ -85,10 +91,10 @@ static const Sig SIG_PURE[SIZE_FS] = {
   SIG_NULL,            /* ignored */
   SIG_NULL,            /* ignored */
   SIG_NULL,            /* ignored */
-  SIG_UINT_UFLOAT,     /* a */
+  SIG_UINT_STEREO,     /* a */
   SIG_NULL,            /* b */
   SIG_NULL,            /* c */
-  SIG_UINT_UFLOAT,     /* d */
+  SIG_UINT_STEREO,     /* d */
   SIG_ENV_ASSIGN,      /* e */
   SIG_NULL,            /* f */
   SIG_NULL,            /* g */
@@ -102,9 +108,9 @@ static const Sig SIG_PURE[SIZE_FS] = {
   SIG_NOTE_OFF,        /* o */
   SIG_PITCH,           /* p */
   SIG_NULL,            /* q */
-  SIG_UINT_UFLOAT,     /* r */
-  SIG_UINT_UFLOAT,     /* s */
-  SIG_UINT_UFLOAT,     /* t */
+  SIG_UINT_STEREO,     /* r */
+  SIG_UINT_STEREO,     /* s */
+  SIG_UINT_STEREO,     /* t */
   SIG_NULL,            /* u */
   SIG_NULL,            /* v */
   SIG_UINT_TEXT,       /* w */
