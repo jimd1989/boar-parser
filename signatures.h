@@ -46,6 +46,9 @@ static const ArgType SIG_NOTE_OFF_ARGS[2] = {ARG_UINT, ARG_UINT};
 static const ArgVal SIG_NOTE_OFF_DEFS[1] = {{1}};
 #define SIG_NOTE_OFF {2, 1, SIG_NOTE_OFF_ARGS, SIG_NOTE_OFF_DEFS}
 
+static const ArgType SIG_AMPLITUDE_ARGS[3] = {ARG_UINT, ARG_UFLOAT, ARG_UFLOAT};
+#define SIG_AMPLITUDE {3, 2, SIG_AMPLITUDE_ARGS, SIG_ZERO_DEFS}
+
 static const ArgType SIG_PITCH_ARGS[3] = {ARG_UINT, ARG_UFLOAT, ARG_TEXT};
 #define SIG_PITCH {3, 2, SIG_PITCH_ARGS, SIG_ZERO_DEFS}
 
@@ -61,10 +64,10 @@ static const Sig SIG_PURE[SIZE_FS] = {
   SIG_NULL,            /* I */
   SIG_NULL,            /* J */
   SIG_NULL,            /* K */
-  SIG_UINT_TEXT,       /* L */
+  SIG_AMPLITUDE,       /* L */
   SIG_NULL,            /* M */
   SIG_NULL,            /* N */
-  SIG_NULL,            /* O */
+  SIG_UINT_TEXT,       /* O */
   SIG_NULL,            /* P */
   SIG_NULL,            /* Q */
   SIG_UINT_TEXT,       /* R */

@@ -4,26 +4,27 @@ typedef enum Fn {
   F_ERROR,        /* error parsing func */
   F_BLANK,        /* no input provided */
   F_UNKNOWN,      /* func undefined */
-  F_ATTACK,       /* env num, val */
-  F_ATTACK_WAVE,  /* env num, wave name */
-  F_DECAY,        /* env num, val */
-  F_DECAY_WAVE,   /* env num, wave name */
-  F_ENV_ASSIGN,   /* env num, osc num | depth */
-  F_ECHO,         /* anything (special condition?) */
-  F_KEY_CURVE,    /* osc num, wave name */
-  F_LOUDNESS,     /* value */
-  F_ENV_LOOP,     /* env num, on/off */
-  F_MODULATE,     /* osc num, osc num, depth | mod */
-  F_NOTE_ON,      /* MIDI note | velocity channel */
-  F_NOTE_OFF,     /* MIDI note | channel */
-  F_PITCH,        /* osc num, pitch | fixed? */
-  F_QUIT,         /* nil */
-  F_RELEASE,      /* env num, val */
-  F_RELEASE_WAVE, /* env num, wave name */
-  F_SUSTAIN,      /* env num, val */
-  F_TOUCH,        /* osc num, val */
-  F_TUNE,         /* MIDI note, pitch */
-  F_WAVE          /* osc num, wave name */
+  F_ATTACK,       /* a - env num, val */
+  F_ATTACK_WAVE,  /* A - env num, wave name */
+  F_DECAY,        /* d - env num, val */
+  F_DECAY_WAVE,   /* D - env num, wave name */
+  F_ENV_ASSIGN,   /* e - env num, osc num | depth */
+  F_ECHO,         /* E - anything (special condition?) */
+  F_KEY_CURVE,    /* k - osc num, wave name */
+  F_LOUDNESS,     /* l - value */
+  F_AMPLITUDE,    /* L - osc num mono val | stereo val */
+  F_MODULATE,     /* m - osc num, osc num, depth | mod */
+  F_NOTE_ON,      /* n - MIDI note | velocity channel */
+  F_NOTE_OFF,     /* o - MIDI note | channel */
+  F_ENV_LOOP,     /* O - env num, on/off */
+  F_PITCH,        /* p - osc num, pitch | fixed? */
+  F_QUIT,         /* q - nil */
+  F_RELEASE,      /* r - env num, val */
+  F_RELEASE_WAVE, /* R - env num, wave name */
+  F_SUSTAIN,      /* s - env num, val */
+  F_TOUCH,        /* t - osc num, val */
+  F_TUNE,         /* T - MIDI note, pitch */
+  F_WAVE          /* w - osc num, wave name */
 } Fn;
 
 static const unsigned int F_PURE[SIZE_FS] = {
@@ -38,10 +39,10 @@ static const unsigned int F_PURE[SIZE_FS] = {
   F_UNKNOWN,      /* I */
   F_UNKNOWN,      /* J */
   F_UNKNOWN,      /* K */
-  F_ENV_LOOP,     /* L */
+  F_AMPLITUDE,    /* L */
   F_UNKNOWN,      /* M */
   F_UNKNOWN,      /* N */
-  F_UNKNOWN,      /* O */
+  F_ENV_LOOP,     /* O */
   F_UNKNOWN,      /* P */
   F_UNKNOWN,      /* Q */
   F_RELEASE_WAVE, /* R */
