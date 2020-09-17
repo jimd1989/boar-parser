@@ -21,7 +21,8 @@ typedef enum WaveType {
 typedef enum ModType {
   ENUM_MOD = 0,
   ENUM_MIX,
-  ENUM_SYNC
+  ENUM_SYNC,
+  ENUM_AMP
 } ModType;
 
 #define ENUM_UNKNOWN INT_MAX;
