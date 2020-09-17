@@ -2,6 +2,7 @@
 
 #include <stdint.h>
 
+#include "parse.h"
 #include "sizes.h"
 
 typedef enum OutResult {
@@ -17,3 +18,4 @@ typedef struct Out {
 } Out;
 
 #define OUT_WORD 1918988130 /* magic word "boar" for output header */
+void eval (Out *, Parse *);

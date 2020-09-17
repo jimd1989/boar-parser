@@ -5,6 +5,7 @@
 
 #include "enums.h"
 #include "output.h"
+#include "parse.h"
 #include "signatures.h"
 #include "types.h"
 
@@ -14,6 +15,7 @@ static OutResult writeShort(Out *, int16_t);
 static OutResult writeFloat(Out *, float);
 static OutResult writeEnum(Out *, char *);
 static OutResult writeError(void);
+static OutResult writeFunc(Out *, Parse *);
 
 static bool
 isBounded(Out *o, int n) {
@@ -66,22 +68,31 @@ writeArg(Out *o, ArgType t, ArgVal a) {
     t == ARG_TEXT                     ? writeEnum(o, a.s)  : writeError();
 }
 
-OutResult
-writeFunc(Out *o, Sig g, ArgVal *as) {
+static OutResult
+recurse(Out *o, Parse *p) {
+  OutResult r = OUT_ERROR;
+  char *startPos = p->buf;
+  p->buf = p->args[1].s; /* parse struct needs pointer instead */
+  parse(p);              /* need error handling here */
+  r = writeFunc(o, p);
+  p->buf = startPos;
+  return r;
+}
 
-/* Parent calling function should keep pointer to o->head, which will allow
- * backtracking and filling in correct size slots in the event of recursion. */  
-
+static OutResult
+writeFunc(Out *o, Parse *p) {
   int n = 0;
   uint8_t *startPos, *endPos = NULL;
+  Sig g = *p->sig;
+  ArgVal *as = p->args;
   OutResult r = OUT_ERROR;
   startPos = o->head;
   writeInt(o, OUT_WORD);
   writeShort(o, (int16_t)0);
-  for (; n < g.count; n++) {
+  for (as++; n < g.count; n++) {
     r = writeArg(o, g.args[n], as[n]);
     if (r == OUT_ERROR)        { o->head = startPos; return r; }
-    else if (r == OUT_RECURSE) { return r; }
+    else if (r == OUT_RECURSE) { return r; } /* call recurse here instead */
   }
   endPos = o->head;
   o->head = startPos + sizeof(OUT_WORD);
