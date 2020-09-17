@@ -24,11 +24,11 @@ static bool isAny(Sig);
 static void backup(ArgVal *, const Sig *, int);
 static bool toF(char *, ArgVal *);
 static bool toI(char *, ArgVal *);
+static bool toS(char *, ArgVal *);
 static bool parseArg(ArgVal *, ArgType, ArgType, char *);
 
 #define SET(n, x) (n | x)
 #define HAS(n, x) ((bool)(n & x))
-#define TRUTH(x) ((x) != 0)
 #define OTHER(x) (HAS(x, ARG_OTHER))
 #define SIGNED(x) (HAS(x, ARG_SIGNED))
 #define ALPHA(x) (HAS(x, ARG_ALPHA))
@@ -98,7 +98,7 @@ isValid(ArgType tx, ArgType tg) {
 
 static void
 reset(Parse *p) {
-  p->buf[strcspn(p->buf, "\n")] = '\0';
+  p->buf[strcspn(p->buf, "\n")] = '\0'; /* how is this handled in recursion? */
   p->head = p->buf;
   p->args[0].i = F_BLANK;
 }
@@ -140,11 +140,19 @@ toI(char *s, ArgVal *a) {
 }
 
 static bool
+toS(char *s, ArgVal *a) {
+  char *c = s;
+  while (*c != '\0') { *c = (char)tolower(*c); c++; }
+  a->s = s;
+  return true;
+}
+
+static bool
 parseArg(ArgVal *a, ArgType tx, ArgType tg, char *s) {
   bool ok = 
     FLOAT(tg) && !FLOAT(tx) && tx != ARG_ANY ? toF(s, a) :
     FLOAT(tx)                                ? toF(s, a) :
-    NUM(tx)                                  ? toI(s, a) : TRUTH(a->s = s);
+    NUM(tx)                                  ? toI(s, a) : toS(s, a);
   if (FLOAT(tg) && !FLOAT(tx) && tx != ARG_ANY) { a->i = floorf(a->f); }
   return ok;
 }
