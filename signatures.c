@@ -13,7 +13,7 @@ cat(char *s, char *x) {
 
 char *
 showSignature(Sig g, char *s) {
-  unsigned int n = 0;
+  int n = 0;
   memset(s, 0, SIZE_IN);
   if (g.count == 0) { return "nothing "; }
   for (; n < g.count; n++) {

@@ -159,7 +159,7 @@ parseArg(ArgVal *a, ArgType tx, ArgType tg, char *s) {
 
 void
 parse(Parse *p) {
-  unsigned int n = 0;
+  int n = 0;
   char *s, *t = NULL;
   ArgType tg = ARG_NIL;
   ArgVal *as = p->args;

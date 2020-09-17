@@ -7,10 +7,10 @@
 #include "types.h"
 
 typedef struct Sig {
-  const unsigned int      count;
-  const unsigned int      required;
-  const ArgType         * args;
-  const ArgVal          * defaults;
+  const int       count;
+  const int       required;
+  const ArgType * args;
+  const ArgVal  * defaults;
 } Sig;
 
 #define SIG_NULL {0 , 0, NULL, NULL}
