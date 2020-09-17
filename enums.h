@@ -25,6 +25,6 @@ typedef enum ModType {
   ENUM_AMP
 } ModType;
 
-#define ENUM_UNKNOWN INT_MAX;
+#define ENUM_UNKNOWN INT_MAX
 
 int toI(char *);

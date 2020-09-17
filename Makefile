@@ -3,9 +3,9 @@ PREFIX = /usr/local
 
 .SUFFIXES:
 all:
-	cc -O3 -ansi -Wall -Wextra -Wno-missing-field-initializers -pedantic -lm *.c -o "boar-parser"
+	cc -O3 -ansi -Wall -Wextra -Wno-missing-field-initializers -pedantic -lm *.c -o "boari"
 install:
 	mkdir -p $(PREFIX)/bin
-	cp boar-parser $(PREFIX)/bin
+	cp boari $(PREFIX)/bin
 uninstall:
-	rm $(PREFIX)/bin/boar-parser
+	rm $(PREFIX)/bin/boari
