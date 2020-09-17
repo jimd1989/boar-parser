@@ -41,5 +41,8 @@ toI(char *s) {
     STREQ(s, "rlog")         ? ENUM_LOGARITHMIC * -1 :
     STREQ(s, "random")       ? ENUM_LOGARITHMIC      :
     STREQ(s, "rand")         ? ENUM_LOGARITHMIC      :
-    STREQ(s, "noise")        ? ENUM_SINE             : ENUM_UNKNOWN;
+    STREQ(s, "noise")        ? ENUM_SINE             :
+    STREQ(s, "mod")          ? ENUM_MOD              :
+    STREQ(s, "mix")          ? ENUM_MIX              :
+    STREQ(s, "sync")         ? ENUM_SYNC             : ENUM_UNKNOWN;
 }

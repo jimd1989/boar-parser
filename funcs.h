@@ -13,7 +13,7 @@ typedef enum Fn {
   F_KEY_CURVE,    /* osc num, wave name */
   F_LOUDNESS,     /* value */
   F_ENV_LOOP,     /* env num, on/off */
-  F_MODULATE,     /* osc num, osc num, depth */
+  F_MODULATE,     /* osc num, osc num, depth | mod */
   F_NOTE_ON,      /* MIDI note | velocity channel */
   F_NOTE_OFF,     /* MIDI note | channel */
   F_PITCH,        /* osc num, pitch | fixed? */

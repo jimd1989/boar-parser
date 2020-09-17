@@ -18,6 +18,12 @@ typedef enum WaveType {
   ENUM_NOISE
 } WaveType;
 
+typedef enum ModType {
+  ENUM_MOD = 0,
+  ENUM_MIX,
+  ENUM_SYNC
+} ModType;
+
 #define ENUM_UNKNOWN INT_MAX;
 
 int toI(char *);
