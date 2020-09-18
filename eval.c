@@ -3,6 +3,7 @@
 #include <stdint.h>
 
 #include "control.h"
+#include "eval.h"
 #include "funcs.h"
 #include "parse.h"
 #include "midi.h"
@@ -16,6 +17,7 @@ static void boundFError(float, float, float);
 static OutResult noteOn(ArgVal *, Out *);
 static OutResult noteOff(ArgVal *, Out *);
 static OutResult envSet(ArgVal *as, Out *o);
+static OutResult echo(ArgVal *, Parse *, Out *);
 
 static bool
 boundI(int n, int m, int x) {
@@ -73,7 +75,24 @@ envSet(ArgVal *as, Out *o) {
   return OUT_SUCCESS;
 }
 
-void
+static OutResult
+echo(ArgVal *as, Parse *p, Out *o) {
+  char *startPos, *endPos = NULL;
+  startPos = p->buf;
+  p->buf = as[1].s;
+  if (! parse(p)) { p->buf = startPos; showParseError(p); return OUT_ERROR; }
+  startPos = (char *)o->head;
+  _O(writeHead(o, (int16_t)0))
+  _O(writeByte(o, (uint8_t)as[0].1))
+  _O(eval(p, o))
+  endPos = (char *)o->head;
+  o->head = (uint8_t *)startPos;
+  _O(writeHead(o, (int16_t)(endPos - (startPos + sizeof(OUT_WORD)))))
+  o->head = (uint8_t *)endPos;
+  return OUT_SUCCESS;
+}
+
+OutResult
 eval(Parse *p, Out *o) {
   OutResult r = OUT_ERROR;
   ArgVal *as = p->args;
@@ -86,7 +105,7 @@ eval(Parse *p, Out *o) {
     f == F_DECAY        ? envSet(as, o)    :
     f == F_DECAY_WAVE   ? true             :
     f == F_ENV_ASSIGN   ? true             :
-    f == F_ECHO         ? true             :
+    f == F_ECHO         ? echo(as, p, o)   :
     f == F_KEY_CURVE    ? true             :
     f == F_LOUDNESS     ? true             :
     f == F_AMPLITUDE    ? true             :
@@ -100,5 +119,5 @@ eval(Parse *p, Out *o) {
     f == F_TOUCH        ? true             :
     f == F_TUNE         ? true             :
     f == F_WAVE         ? true             : false;
-  if (r) writeFunc(o);
+  return r;
 }
