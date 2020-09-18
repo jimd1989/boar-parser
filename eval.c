@@ -21,6 +21,7 @@ static bool setWave(ArgVal *, Out *);
 static bool assignEnv(ArgVal *, Out *);
 static bool loudness(ArgVal *, Out *);
 static bool amplitude(ArgVal *, Out *);
+static bool modulate(ArgVal *, Out *);
 static bool echo(ArgVal *, Parse *, Out *);
 
 static bool
@@ -127,6 +128,19 @@ amplitude(ArgVal *as, Out *o) {
 }
 
 static bool
+modulate(ArgVal *as, Out *o) {
+  int16_t size = sizeof(uint8_t) + (sizeof(int) * 3) + sizeof(float); 
+  _O(boundF(0.0f, 1.0f, as[3].f))
+  _O(writeHead(o, size))
+  _O(writeByte(o, (uint8_t)as[0].i))
+  _O(writeInt(o, as[1].i));
+  _O(writeInt(o, as[2].i));
+  _O(writeFloat(o, as[3].f));
+  _O(writeEnum(o, as[4].s));
+  return true;
+}
+
+static bool
 echo(ArgVal *as, Parse *p, Out *o) {
   char *startPos, *endPos = NULL;
   startPos = p->buf;
@@ -160,7 +174,7 @@ eval(Parse *p, Out *o) {
     f == F_KEY_CURVE    ? setWave(as, o)   :
     f == F_LOUDNESS     ? loudness(as, o)  :
     f == F_AMPLITUDE    ? amplitude(as, o) :
-    f == F_MODULATE     ? true             :
+    f == F_MODULATE     ? modulate(as, o)  :
     f == F_ENV_LOOP     ? true             :
     f == F_PITCH        ? true             :
     f == F_QUIT         ? true             :
