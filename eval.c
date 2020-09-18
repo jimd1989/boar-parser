@@ -87,4 +87,5 @@ eval(Parse *p, Out *o) {
     f == F_TOUCH        ? true :
     f == F_TUNE         ? true :
     f == F_WAVE         ? true : false;
+  if (r) writeFunc(o);
 }

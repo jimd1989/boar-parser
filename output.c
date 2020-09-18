@@ -1,6 +1,7 @@
 #include <err.h>
 #include <stdbool.h>
 #include <stdint.h>
+#include <stdio.h>
 #include <string.h>
 
 #include "enums.h"
@@ -62,6 +63,11 @@ OutResult
 writeHead(Out *o, int16_t n) {
   if (writeInt(o, OUT_WORD) == OUT_ERROR) { return OUT_ERROR; }
   return writeShort(o, n);
+}
+
+OutResult
+writeFunc(Out *o) {
+  return !fwrite(o->buf, 1, o->head - o->buf, o->out) ? OUT_ERROR : OUT_SUCCESS;
 }
 
 /* static OutResult
