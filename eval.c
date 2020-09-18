@@ -19,6 +19,8 @@ static bool noteOff(ArgVal *, Out *);
 static bool setEnv(ArgVal *, Out *);
 static bool setWave(ArgVal *, Out *);
 static bool assignEnv(ArgVal *, Out *);
+static bool setFloat(ArgVal *, Out *);
+static bool amplitude(ArgVal *, Out *);
 static bool echo(ArgVal *, Parse *, Out *);
 
 static bool
@@ -29,7 +31,7 @@ boundI(int n, int m, int x) {
 
 static bool
 boundF(float n, float m, float x) {
-  if (x < n || x > m) { boundIError(n, m, x); return false; }
+  if (x < n || x > m) { boundFError(n, m, x); return false; }
   else                { return true; }
 }
 
@@ -108,6 +110,21 @@ setFloat(ArgVal *as, Out *o) {
 }
 
 static bool
+amplitude(ArgVal *as, Out *o) {
+  int16_t size = sizeof(uint8_t) + sizeof(int) + (sizeof(float) * 3);
+  _O(boundF(0.0f, 1.0f, as[2].f))
+  _O(boundF(0.0f, 1.0f, as[3].f))
+  _O(boundF(0.0f, 1.0f, as[4].f))
+  _O(writeHead(o, size))
+  _O(writeByte(o, (uint8_t)as[0].i))
+  _O(writeInt(o, as[1].i));
+  _O(writeFloat(o, as[2].f));
+  _O(writeFloat(o, as[3].f));
+  _O(writeFloat(o, as[4].f));
+  return true;
+}
+
+static bool
 echo(ArgVal *as, Parse *p, Out *o) {
   char *startPos, *endPos = NULL;
   startPos = p->buf;
@@ -140,7 +157,7 @@ eval(Parse *p, Out *o) {
     f == F_ECHO         ? echo(as, p, o)   :
     f == F_KEY_CURVE    ? setWave(as, o)   :
     f == F_LOUDNESS     ? setFloat(as, o)  :
-    f == F_AMPLITUDE    ? true             :
+    f == F_AMPLITUDE    ? amplitude(as, o) :
     f == F_MODULATE     ? true             :
     f == F_ENV_LOOP     ? true             :
     f == F_PITCH        ? true             :
