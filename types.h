@@ -6,7 +6,8 @@ typedef enum ArgFlag {
   ARG_SIGNED    = (1 << 2),
   ARG_ALPHA     = (1 << 3),
   ARG_OTHER     = (1 << 4),
-  ARG_ANYTHING  = (1 << 5)
+  ARG_SHORT     = (1 << 5),
+  ARG_ANYTHING  = (1 << 6)
 } ArgFlag;
 
 typedef enum ArgType {
@@ -16,6 +17,7 @@ typedef enum ArgType {
   ARG_INT    = ARG_NUMBER | ARG_SIGNED,
   ARG_FLOAT  = ARG_NUMBER | ARG_SIGNED | ARG_FLOATING,
   ARG_TEXT   = ARG_ALPHA,
+  ARG_SIZE   = ARG_SHORT,
   ARG_ANY    = ARG_ANYTHING
 } ArgType;
 

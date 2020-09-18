@@ -1,4 +1,5 @@
 #include <ctype.h>
+#include <err.h>
 #include <math.h>
 #include <stdbool.h>
 #include <stdio.h>
@@ -16,7 +17,6 @@ static bool isBlank(const char);
 static char *parseFunc(Parse *);
 static ArgType parseType(char *);
 static bool isValid(ArgType, ArgType);
-static void reset(Parse *);
 static void error(Parse *);
 static char *clearSpace(char *);
 static bool isUnknown(ArgVal *as);
@@ -97,13 +97,6 @@ isValid(ArgType tx, ArgType tg) {
 }
 
 static void
-reset(Parse *p) {
-  p->buf[strcspn(p->buf, "\n")] = '\0'; /* how is this handled in recursion? */
-  p->head = p->buf;
-  p->args[0].i = F_BLANK;
-}
-
-static void
 error(Parse *p) {
   p->args[0].i = F_ERROR;
 }
@@ -158,29 +151,48 @@ parseArg(ArgVal *a, ArgType tx, ArgType tg, char *s) {
 }
 
 void
+resetParse(Parse *p) {
+  p->buf[strcspn(p->buf, "\n")] = '\0';
+  p->head = p->buf;
+  p->args[0].i = F_BLANK;
+}
+
+bool
 parse(Parse *p) {
   int n = 0;
   char *s, *t = NULL;
   ArgType tg = ARG_NIL;
   ArgVal *as = p->args;
   const Sig *g = NULL;
-  reset(p);
   p->head = clearSpace(p->head);
   s = p->head;
-  if (isBlank(*s))                               { return; }
+  if (isBlank(*s))                               { return true; }
   s = parseFunc(p);
-  if (isUnknown(as))                             { return; }
+  if (isUnknown(as))                             { return false; }
   g = p->sig;
-  if (isAny(*g))                                 { as[1].s = s; return; }
+  if (isAny(*g))                                 { as[1].s = s; return true; }
   t = strtok(s, " \t");
   for (; n < g->count || t != NULL; n++) {
-    if (n >= SIZE_ARGS)                          { error(p); return; }
-    if (n >= g->count)                           { error(p); return; }
-    if (t == NULL && n < g->required)            { error(p); return; }
+    if (n >= SIZE_ARGS)                          { error(p); return false; }
+    if (n >= g->count)                           { error(p); return false; }
+    if (t == NULL && n < g->required)            { error(p); return false; }
     if (t == NULL)                               { backup(as, g, n); continue; }
     tg = parseType(t);
-    if (! isValid(g->args[n], tg))               { error(p); return; }
-    if (! parseArg(&as[n+1], g->args[n], tg, t)) { error(p); return; }
+    if (! isValid(g->args[n], tg))               { error(p); return false; }
+    if (! parseArg(&as[n+1], g->args[n], tg, t)) { error(p); return false; }
     t = strtok(NULL, " \t");
+  }
+  return true;
+}
+
+void
+showParseError(Parse *p) {
+  switch(p->args[0].i) {
+    case F_ERROR:
+      warnx("expected %s", showSignature(*p->sig, p->buf));
+      break;
+    case F_UNKNOWN:
+      warnx("unknown function");
+      break;
   }
 }

@@ -4,6 +4,7 @@
 
 #include "parse.h"
 #include "sizes.h"
+#include "types.h"
 
 typedef enum OutResult {
   OUT_ERROR = 0,
@@ -18,4 +19,9 @@ typedef struct Out {
 } Out;
 
 #define OUT_WORD 1918988130 /* magic word "boar" for output header */
-void eval (Out *, Parse *);
+#define GUARD(x) if (! x) { return OUT_ERROR; }
+
+OutResult writeInt(Out *, int n);
+OutResult writeFloat(Out *, float);
+OutResult writeEnum(Out *, char *);
+OutResult writeHead(Out *, int16_t);

@@ -1,5 +1,7 @@
 #pragma once
 
+#include <stdbool.h>
+
 #include "signatures.h"
 #include "sizes.h"
 #include "types.h"
@@ -11,4 +13,6 @@ typedef struct Parse {
   const Sig     * sig;
 } Parse;
 
-void parse(Parse *);
+void resetParse(Parse *p);
+bool parse(Parse *);
+void showParseError(Parse *p);
