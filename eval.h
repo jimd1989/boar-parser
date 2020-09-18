@@ -1,6 +1,8 @@
 #pragma once
 
+#include <stdbool.h>
+
 #include "output.h"
 #include "parse.h"
 
-OutResult eval(Parse *, Out *);
+bool eval(Parse *, Out *);

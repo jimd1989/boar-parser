@@ -14,11 +14,11 @@ static bool boundI(int, int, int);
 static bool boundF(float, float, float);
 static void boundIError(int, int, int);
 static void boundFError(float, float, float);
-static OutResult noteOn(ArgVal *, Out *);
-static OutResult noteOff(ArgVal *, Out *);
-static OutResult setEnv(ArgVal *, Out *);
-static OutResult setWave(ArgVal *, Out *);
-static OutResult echo(ArgVal *, Parse *, Out *);
+static bool noteOn(ArgVal *, Out *);
+static bool noteOff(ArgVal *, Out *);
+static bool setEnv(ArgVal *, Out *);
+static bool setWave(ArgVal *, Out *);
+static bool echo(ArgVal *, Parse *, Out *);
 
 static bool
 boundI(int n, int m, int x) {
@@ -42,7 +42,7 @@ boundFError(float n, float m, float x) {
   warnx("%f not between %f and %f", x, n, m);
 }
 
-static OutResult
+static bool
 noteOn(ArgVal *as, Out *o) {
   _O(boundI(0, MIDI_MAX, as[0].i))
   _O(boundI(0, MIDI_MAX, as[1].i))
@@ -51,10 +51,10 @@ noteOn(ArgVal *as, Out *o) {
   _O(writeByte(o, (uint8_t)(MIDI_NOTE_ON + (as[2].i - 1))))
   _O(writeByte(o, (uint8_t)as[0].i))
   _O(writeByte(o, (uint8_t)as[1].i))
-  return OUT_SUCCESS;
+  return true;
 }
 
-static OutResult
+static bool
 noteOff(ArgVal *as, Out *o) {
   _O(boundI(0, MIDI_MAX, as[0].i))
   _O(boundI(1, MIDI_CHANNELS, as[1].i))
@@ -62,10 +62,10 @@ noteOff(ArgVal *as, Out *o) {
   _O(writeByte(o, (uint8_t)(MIDI_NOTE_ON + (as[1].i - 1))))
   _O(writeByte(o, (uint8_t)as[0].i))
   _O(writeByte(o, (uint8_t)0))
-  return OUT_SUCCESS;
+  return true;
 }
 
-static OutResult
+static bool
 setEnv(ArgVal *as, Out *o) {
   int16_t size = sizeof(uint8_t) + sizeof(int) + sizeof(float) + sizeof(float);
   _O(writeHead(o, size))
@@ -73,39 +73,39 @@ setEnv(ArgVal *as, Out *o) {
   _O(writeInt(o, as[1].i));
   _O(writeFloat(o, as[2].f));
   _O(writeFloat(o, as[3].f));
-  return OUT_SUCCESS;
+  return true;
 }
 
-static OutResult
+static bool
 setWave(ArgVal *as, Out *o) {
   int16_t size = sizeof(uint8_t) + sizeof(int) + sizeof(int);
   _O(writeHead(o, size))
   _O(writeByte(o, (uint8_t)as[0].i))
   _O(writeInt(o, as[1].i))
   _O(writeEnum(o, as[2].s))
-  return OUT_SUCCESS;
+  return true;
 }
 
-static OutResult
+static bool
 echo(ArgVal *as, Parse *p, Out *o) {
   char *startPos, *endPos = NULL;
   startPos = p->buf;
   p->buf = as[1].s;
-  if (! parse(p)) { p->buf = startPos; showParseError(p); return OUT_ERROR; }
+  if (! parse(p)) { p->buf = startPos; showParseError(p); return false; }
   startPos = (char *)o->head;
   _O(writeHead(o, (int16_t)0))
-  _O(writeByte(o, (uint8_t)as[0].1))
+  _O(writeByte(o, (uint8_t)as[0].i))
   _O(eval(p, o))
   endPos = (char *)o->head;
   o->head = (uint8_t *)startPos;
   _O(writeHead(o, (int16_t)(endPos - (startPos + sizeof(OUT_WORD)))))
   o->head = (uint8_t *)endPos;
-  return OUT_SUCCESS;
+  return true;
 }
 
-OutResult
+bool
 eval(Parse *p, Out *o) {
-  OutResult r = OUT_ERROR;
+  bool r = false;
   ArgVal *as = p->args;
   Fn f = as[0].i;
   r =

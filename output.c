@@ -11,7 +11,7 @@
 #include "types.h"
 
 static bool isBounded(Out *, int);
-static OutResult writeShort(Out *, int16_t);
+static bool writeShort(Out *, int16_t);
 
 static bool
 isBounded(Out *o, int n) {
@@ -19,45 +19,45 @@ isBounded(Out *o, int n) {
   else                                    { return true; }
 }
 
-OutResult
+bool
 writeInt(Out *o, int n) {
   int *os = (int *)o->head;
   if (isBounded(o, sizeof(n))) { *os = n; os++; o->head = (uint8_t *)os; }
-  else                         { return OUT_ERROR; }
-  return OUT_SUCCESS;
+  else                         { return false; }
+  return true;
 }
 
-OutResult
+bool
 writeShort(Out *o, int16_t n) {
   int *os = (int *)o->head;
   if (isBounded(o, sizeof(n))) { *os = n; os++; o->head = (uint8_t *)os; }
-  else                         { return OUT_ERROR; }
-  return OUT_SUCCESS;
+  else                         { return false; }
+  return true;
 }
 
-OutResult
+bool
 writeByte(Out *o, uint8_t n) {
   uint8_t *os = o->head;
   if (isBounded(o, sizeof(n))) { *os = n; os++; o->head = os; }
-  else                         { return OUT_ERROR; }
-  return OUT_SUCCESS;
+  else                         { return false; }
+  return true;
 }
 
-OutResult
+bool
 writeFloat(Out *o, float f) {
   float *os = (float *)o->head;
   if (isBounded(o, sizeof(f))) { *os = f; os++; o->head = (uint8_t *)os; }
-  else                         { return OUT_ERROR; }
-  return OUT_SUCCESS;
+  else                         { return false; }
+  return true;
 }
 
-OutResult
+bool
 writeEnum(Out *o, char *s) {
   int n = toI(s);
-  return n == ENUM_UNKNOWN ? OUT_ERROR : writeInt(o, n);
+  return n == ENUM_UNKNOWN ? false : writeInt(o, n);
 }
 
-/*OutResult
+/*bool
 writeArg(Out *o, ArgType t, ArgVal a) {
   return
     t == ARG_ANY                      ? OUT_RECURSE                 :
@@ -67,20 +67,20 @@ writeArg(Out *o, ArgType t, ArgVal a) {
     t == ARG_TEXT                     ? writeEnum(o, a.s)           : error();
 } */
 
-OutResult
+bool
 writeHead(Out *o, int16_t n) {
-  if (writeInt(o, OUT_WORD) == OUT_ERROR) { return OUT_ERROR; }
+  if (writeInt(o, OUT_WORD) == false) { return false; }
   return writeShort(o, n);
 }
 
-OutResult
+bool
 writeFunc(Out *o) {
-  return !fwrite(o->buf, 1, o->head - o->buf, o->out) ? OUT_ERROR : OUT_SUCCESS;
+  return !fwrite(o->buf, 1, o->head - o->buf, o->out) ? false : true;
 }
 
-/* static OutResult
+/* static bool
 recurse(Out *o, Parse *p) {
-  OutResult r = OUT_ERROR;
+  bool r = false;
   char *startPos = p->buf;
   p->buf = p->args[1].s; 
   parse(p);              
@@ -90,19 +90,19 @@ recurse(Out *o, Parse *p) {
   return r;
 }
 
-static OutResult
+static bool
 writeFunc(Out *o, Parse *p) {
   int n = 0;
   uint8_t *startPos, *endPos = NULL;
   Sig g = *p->sig;
   ArgVal *as = p->args;
-  OutResult r = OUT_ERROR;
+  bool r = false;
   startPos = o->head;
   writeInt(o, OUT_WORD);
   writeShort(o, (int16_t)0);
   for (as++; n < g.count; n++) {
     r = writeArg(o, g.args[n], as[n]);
-    if (r == OUT_ERROR)        { o->head = startPos; return r; }
+    if (r == false)            { o->head = startPos; return r; }
     else if (r == OUT_RECURSE) { return r; }
   }
   endPos = o->head;
