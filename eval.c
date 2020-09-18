@@ -18,6 +18,7 @@ static bool noteOn(ArgVal *, Out *);
 static bool noteOff(ArgVal *, Out *);
 static bool setEnv(ArgVal *, Out *);
 static bool setWave(ArgVal *, Out *);
+static bool assignEnv(ArgVal *, Out *);
 static bool echo(ArgVal *, Parse *, Out *);
 
 static bool
@@ -87,6 +88,17 @@ setWave(ArgVal *as, Out *o) {
 }
 
 static bool
+assignEnv(ArgVal *as, Out *o) {
+  int16_t size = sizeof(uint8_t) + sizeof(int) + sizeof(int) + sizeof(float);
+  _O(writeHead(o, size))
+  _O(writeByte(o, (uint8_t)as[0].i))
+  _O(writeInt(o, as[1].i))
+  _O(writeInt(o, as[2].i))
+  _O(writeFloat(o, as[3].f))
+  return true;
+}
+
+static bool
 echo(ArgVal *as, Parse *p, Out *o) {
   char *startPos, *endPos = NULL;
   startPos = p->buf;
@@ -115,7 +127,7 @@ eval(Parse *p, Out *o) {
     f == F_ATTACK_WAVE  ? setWave(as, o)   :
     f == F_DECAY        ? setEnv(as, o)    :
     f == F_DECAY_WAVE   ? setWave(as, o)   :
-    f == F_ENV_ASSIGN   ? true             :
+    f == F_ENV_ASSIGN   ? assignEnv(as, o) :
     f == F_ECHO         ? echo(as, p, o)   :
     f == F_KEY_CURVE    ? setWave(as, o)   :
     f == F_LOUDNESS     ? true             :
