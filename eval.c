@@ -22,6 +22,7 @@ static bool assignEnv(ArgVal *, Out *);
 static bool loudness(ArgVal *, Out *);
 static bool amplitude(ArgVal *, Out *);
 static bool modulate(ArgVal *, Out *);
+static bool setText(ArgVal *, Out *);
 static bool echo(ArgVal *, Parse *, Out *);
 
 static bool
@@ -74,9 +75,9 @@ setEnv(ArgVal *as, Out *o) {
   int16_t size = sizeof(uint8_t) + sizeof(int) + sizeof(float) + sizeof(float);
   _O(writeHead(o, size))
   _O(writeByte(o, (uint8_t)as[0].i))
-  _O(writeInt(o, as[1].i));
-  _O(writeFloat(o, as[2].f));
-  _O(writeFloat(o, as[3].f));
+  _O(writeInt(o, as[1].i))
+  _O(writeFloat(o, as[2].f))
+  _O(writeFloat(o, as[3].f))
   return true;
 }
 
@@ -120,10 +121,10 @@ amplitude(ArgVal *as, Out *o) {
   _O(boundF(0.0f, 1.0f, as[4].f))
   _O(writeHead(o, size))
   _O(writeByte(o, (uint8_t)as[0].i))
-  _O(writeInt(o, as[1].i));
-  _O(writeFloat(o, as[2].f));
-  _O(writeFloat(o, as[3].f));
-  _O(writeFloat(o, as[4].f));
+  _O(writeInt(o, as[1].i))
+  _O(writeFloat(o, as[2].f))
+  _O(writeFloat(o, as[3].f))
+  _O(writeFloat(o, as[4].f))
   return true;
 }
 
@@ -133,10 +134,19 @@ modulate(ArgVal *as, Out *o) {
   _O(boundF(0.0f, 1.0f, as[3].f))
   _O(writeHead(o, size))
   _O(writeByte(o, (uint8_t)as[0].i))
-  _O(writeInt(o, as[1].i));
-  _O(writeInt(o, as[2].i));
-  _O(writeFloat(o, as[3].f));
-  _O(writeEnum(o, as[4].s));
+  _O(writeInt(o, as[1].i))
+  _O(writeInt(o, as[2].i))
+  _O(writeFloat(o, as[3].f))
+  _O(writeEnum(o, as[4].s))
+  return true;
+}
+
+static bool
+setText(ArgVal *as, Out *o) {
+  int16_t size = sizeof(uint8_t) + sizeof(int);
+  _O(writeHead(o, size))
+  _O(writeByte(o, (uint8_t)as[0].i))
+  _O(writeEnum(o, as[1].s))
   return true;
 }
 
@@ -175,7 +185,7 @@ eval(Parse *p, Out *o) {
     f == F_LOUDNESS     ? loudness(as, o)  :
     f == F_AMPLITUDE    ? amplitude(as, o) :
     f == F_MODULATE     ? modulate(as, o)  :
-    f == F_ENV_LOOP     ? true             :
+    f == F_ENV_LOOP     ? setText(as, o)   :
     f == F_PITCH        ? true             :
     f == F_QUIT         ? true             :
     f == F_RELEASE      ? setEnv(as, o)    :
