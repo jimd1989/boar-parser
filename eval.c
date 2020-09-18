@@ -19,7 +19,7 @@ static bool noteOff(ArgVal *, Out *);
 static bool setEnv(ArgVal *, Out *);
 static bool setWave(ArgVal *, Out *);
 static bool assignEnv(ArgVal *, Out *);
-static bool setFloat(ArgVal *, Out *);
+static bool loudness(ArgVal *, Out *);
 static bool amplitude(ArgVal *, Out *);
 static bool echo(ArgVal *, Parse *, Out *);
 
@@ -92,6 +92,7 @@ setWave(ArgVal *as, Out *o) {
 static bool
 assignEnv(ArgVal *as, Out *o) {
   int16_t size = sizeof(uint8_t) + sizeof(int) + sizeof(int) + sizeof(float);
+  _O(boundF(0.0f, 1.0f, as[3].f))
   _O(writeHead(o, size))
   _O(writeByte(o, (uint8_t)as[0].i))
   _O(writeInt(o, as[1].i))
@@ -101,8 +102,9 @@ assignEnv(ArgVal *as, Out *o) {
 }
 
 static bool
-setFloat(ArgVal *as, Out *o) {
+loudness(ArgVal *as, Out *o) {
   int16_t size = sizeof(uint8_t) + sizeof(float);
+  _O(boundF(0.0f, 1.0f, as[1].f))
   _O(writeHead(o, size))
   _O(writeByte(o, (uint8_t)as[0].i))
   _O(writeFloat(o, as[1].f))
@@ -156,7 +158,7 @@ eval(Parse *p, Out *o) {
     f == F_ENV_ASSIGN   ? assignEnv(as, o) :
     f == F_ECHO         ? echo(as, p, o)   :
     f == F_KEY_CURVE    ? setWave(as, o)   :
-    f == F_LOUDNESS     ? setFloat(as, o)  :
+    f == F_LOUDNESS     ? loudness(as, o)  :
     f == F_AMPLITUDE    ? amplitude(as, o) :
     f == F_MODULATE     ? true             :
     f == F_ENV_LOOP     ? true             :
