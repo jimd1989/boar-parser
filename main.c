@@ -6,7 +6,9 @@
 
 int
 main(void) {
-  Parse p = {{0}};
+  char buf[SIZE_IN] = {0};
+  Parse p = {0};
+  p.buf = buf;
   warnx("Welcome. You can exit at any time by pressing q + enter.");
   while(fgets(p.buf, SIZE_IN, stdin) != NULL) {
     resetParse(&p);

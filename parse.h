@@ -7,7 +7,7 @@
 #include "types.h"
 
 typedef struct Parse {
-  char            buf[SIZE_IN];
+  char          * buf;
   char          * head;
   ArgVal          args[SIZE_ARGS];
   const Sig     * sig;
