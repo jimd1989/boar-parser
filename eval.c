@@ -99,6 +99,15 @@ assignEnv(ArgVal *as, Out *o) {
 }
 
 static bool
+setFloat(ArgVal *as, Out *o) {
+  int16_t size = sizeof(uint8_t) + sizeof(float);
+  _O(writeHead(o, size))
+  _O(writeByte(o, (uint8_t)as[0].i))
+  _O(writeFloat(o, as[1].f))
+  return true;
+}
+
+static bool
 echo(ArgVal *as, Parse *p, Out *o) {
   char *startPos, *endPos = NULL;
   startPos = p->buf;
@@ -130,7 +139,7 @@ eval(Parse *p, Out *o) {
     f == F_ENV_ASSIGN   ? assignEnv(as, o) :
     f == F_ECHO         ? echo(as, p, o)   :
     f == F_KEY_CURVE    ? setWave(as, o)   :
-    f == F_LOUDNESS     ? true             :
+    f == F_LOUDNESS     ? setFloat(as, o)  :
     f == F_AMPLITUDE    ? true             :
     f == F_MODULATE     ? true             :
     f == F_ENV_LOOP     ? true             :
