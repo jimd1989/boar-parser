@@ -4,6 +4,8 @@
 
 #define STREQ(s1, s2) (strcmp(s1, s2) == 0)
 
+/* make all of these FNV-1 hashes or something instead */
+
 int
 toI(char *s) {
   return

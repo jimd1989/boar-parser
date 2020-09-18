@@ -36,6 +36,14 @@ writeShort(Out *o, int16_t n) {
 }
 
 OutResult
+writeByte(Out *o, uint8_t n) {
+  uint8_t *os = o->head;
+  if (isBounded(o, sizeof(n))) { *os = n; os++; o->head = os; }
+  else                         { return OUT_ERROR; }
+  return OUT_SUCCESS;
+}
+
+OutResult
 writeFloat(Out *o, float f) {
   float *os = (float *)o->head;
   if (isBounded(o, sizeof(f))) { *os = f; os++; o->head = (uint8_t *)os; }

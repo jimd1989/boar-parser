@@ -24,6 +24,7 @@ typedef struct Out {
 #define GUARD(x) if (! x) { return OUT_ERROR; }
 
 OutResult writeInt(Out *, int n);
+OutResult writeByte(Out *, uint8_t n);
 OutResult writeFloat(Out *, float);
 OutResult writeEnum(Out *, char *);
 OutResult writeHead(Out *, int16_t);
