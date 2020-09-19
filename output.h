@@ -2,7 +2,6 @@
 
 #include <stdbool.h>
 #include <stdint.h>
-#include <stdio.h>
 
 #include "parse.h"
 #include "sizes.h"
@@ -11,7 +10,6 @@
 typedef struct Out {
   uint8_t         buf[SIZE_OUT];
   uint8_t       * head;
-  FILE          * out;
 } Out;
 
 #define OUT_WORD 1918988130 /* magic word "boar" for output header */

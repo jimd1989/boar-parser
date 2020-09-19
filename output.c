@@ -65,14 +65,12 @@ writeHead(Out *o, int16_t n) {
 
 bool
 writeFunc(Out *o) {
-  return !fwrite(o->buf, 1, o->head - o->buf, o->out) ? false : true;
+  return !fwrite(o->buf, 1, o->head - o->buf, stdout) ? false : true;
 }
 
 Out
 makeOut(void) {
   Out o = {{0}};
   o.head = o.buf;
-  o.out = freopen(NULL, "wb", stdout);
-  if (o.out == NULL) { errx(1, "could not switch to binary output"); }
   return o;
 }

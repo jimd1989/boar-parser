@@ -196,3 +196,12 @@ showParseError(Parse *p) {
       break;
   }
 }
+
+Parse
+makeParse(char *buf) {
+  Parse p = {0};
+  p.buf = buf;
+  p.head = p.buf;
+  p.sig = &SIG_PURE[SIG_NULL_POS];
+  return p;
+}

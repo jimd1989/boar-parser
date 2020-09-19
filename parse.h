@@ -13,6 +13,7 @@ typedef struct Parse {
   const Sig     * sig;
 } Parse;
 
-void resetParse(Parse *p);
+void resetParse(Parse *);
 bool parse(Parse *);
-void showParseError(Parse *p);
+void showParseError(Parse *);
+Parse makeParse(char *);
