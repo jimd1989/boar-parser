@@ -23,6 +23,8 @@ static bool loudness(ArgVal *, Out *);
 static bool amplitude(ArgVal *, Out *);
 static bool modulate(ArgVal *, Out *);
 static bool setText(ArgVal *, Out *);
+static bool pitch(ArgVal *, Out *);
+static bool quit(ArgVal *, Out *);
 static bool echo(ArgVal *, Parse *, Out *);
 
 static bool
@@ -163,6 +165,14 @@ pitch(ArgVal *as, Out *o) {
 }
 
 static bool
+quit(ArgVal *as, Out *o) {
+  int16_t size = sizeof(uint8_t);
+  _O(writeHead(o, size))
+  _O(writeByte(o, (uint8_t)as[0].i))
+  return true;
+}
+
+static bool
 echo(ArgVal *as, Parse *p, Out *o) {
   char *startPos, *endPos = NULL;
   startPos = p->buf;
@@ -200,7 +210,7 @@ eval(Parse *p, Out *o) {
     f == F_MODULATE     ? modulate(as, o)  :
     f == F_ENV_LOOP     ? setText(as, o)   :
     f == F_PITCH        ? pitch(as, o)     :
-    f == F_QUIT         ? true             :
+    f == F_QUIT         ? quit(as, o)      :
     f == F_RELEASE      ? setEnv(as, o)    :
     f == F_RELEASE_WAVE ? setWave(as, o)   :
     f == F_SUSTAIN      ? setEnv(as, o)    :
