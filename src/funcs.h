@@ -1,6 +1,13 @@
 #include "sizes.h"
 
+/* Representing boar commands as enums. */
+
 typedef enum Fn {
+
+/* The first byte (after the header) in a message to boar is an enum telling
+ * it which of its commands to run. This Fn mapping will be duplicated on the
+ * boar server and used to dispatch commands. */
+
   F_ERROR,        /* error parsing func                           */
   F_BLANK,        /* no input provided                            */
   F_UNKNOWN,      /* func undefined                               */
@@ -27,6 +34,8 @@ typedef enum Fn {
   F_WAVE          /* w - osc num, wave name                       */
 } Fn;
 
+/* When a token A/A./A: is encountered, its actual function enumeration is
+ * retrieved from one of the following three alphabets. */
 static const unsigned int F_PURE[SIZE_FS] = {
   F_ATTACK_WAVE,  /* A */
   F_UNKNOWN,      /* B */
