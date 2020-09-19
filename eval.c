@@ -87,7 +87,7 @@ setEnv(ArgVal *as, Out *o) {
 
 static bool
 setWave(ArgVal *as, Out *o) {
-  int16_t size = sizeof(uint8_t) + sizeof(int) + sizeof(int);
+  int16_t size = (sizeof(uint8_t) *2) + sizeof(int);
   _O(writeHead(o, size));
   _O(writeByte(o, (uint8_t)as[0].i));
   _O(writeInt(o, as[1].i));
@@ -134,7 +134,7 @@ amplitude(ArgVal *as, Out *o) {
 
 static bool
 modulate(ArgVal *as, Out *o) {
-  int16_t size = sizeof(uint8_t) + (sizeof(int) * 3) + sizeof(float); 
+  int16_t size = (sizeof(uint8_t) * 2) + (sizeof(int) * 2) + sizeof(float);
   _O(boundF(0.0f, 1.0f, as[3].f));
   _O(writeHead(o, size));
   _O(writeByte(o, (uint8_t)as[0].i));
@@ -147,16 +147,17 @@ modulate(ArgVal *as, Out *o) {
 
 static bool
 setText(ArgVal *as, Out *o) {
-  int16_t size = sizeof(uint8_t) + sizeof(int);
+  int16_t size = (sizeof(uint8_t) * 2) + sizeof(int);
   _O(writeHead(o, size));
   _O(writeByte(o, (uint8_t)as[0].i));
-  _O(writeEnum(o, as[1].s));
+  _O(writeInt(o, as[1].i));
+  _O(writeEnum(o, as[2].s));
   return true;
 }
 
 static bool
 pitch(ArgVal *as, Out *o) {
-  int16_t size = sizeof(uint8_t) + (sizeof(int) * 2) + (sizeof(float) * 2);
+  int16_t size = (sizeof(uint8_t) * 2) + sizeof(int) + (sizeof(float) * 2);
   _O(writeHead(o, size));
   _O(writeByte(o, (uint8_t)as[0].i));
   _O(writeInt(o, as[1].i));
