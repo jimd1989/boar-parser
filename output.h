@@ -11,7 +11,6 @@
 typedef struct Out {
   uint8_t         buf[SIZE_OUT];
   uint8_t       * head;
-  int             limit;
   FILE          * out;
 } Out;
 
@@ -23,3 +22,4 @@ bool writeFloat(Out *, float);
 bool writeEnum(Out *, char *);
 bool writeHead(Out *, int16_t);
 bool writeFunc(Out *);
+Out makeOut(void);

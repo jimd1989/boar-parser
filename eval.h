@@ -5,4 +5,5 @@
 #include "output.h"
 #include "parse.h"
 
+void resetEval(Out *);
 bool eval(Parse *, Out *);

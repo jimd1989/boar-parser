@@ -217,6 +217,11 @@ echo(ArgVal *as, Parse *p, Out *o) {
   return true;
 }
 
+void
+resetEval(Out *o) {
+  o->head = o->buf;
+}
+
 bool
 eval(Parse *p, Out *o) {
   bool r = false;
