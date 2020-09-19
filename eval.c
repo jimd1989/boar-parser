@@ -151,11 +151,24 @@ setText(ArgVal *as, Out *o) {
 }
 
 static bool
+pitch(ArgVal *as, Out *o) {
+  int16_t size = sizeof(uint8_t) + (sizeof(int) * 2) + (sizeof(float) * 2);
+  _O(writeHead(o, size))
+  _O(writeByte(o, (uint8_t)as[0].i))
+  _O(writeInt(o, as[1].i))
+  _O(writeFloat(o, as[2].f))
+  _O(writeFloat(o, as[3].f))
+  _O(writeEnum(o, as[4].s))
+  return true;
+}
+
+static bool
 echo(ArgVal *as, Parse *p, Out *o) {
   char *startPos, *endPos = NULL;
   startPos = p->buf;
   p->buf = as[1].s;
   if (! parse(p)) { p->buf = startPos; showParseError(p); return false; }
+  p->buf = startPos;
   startPos = (char *)o->head;
   _O(writeHead(o, (int16_t)0))
   _O(writeByte(o, (uint8_t)as[0].i))
@@ -186,7 +199,7 @@ eval(Parse *p, Out *o) {
     f == F_AMPLITUDE    ? amplitude(as, o) :
     f == F_MODULATE     ? modulate(as, o)  :
     f == F_ENV_LOOP     ? setText(as, o)   :
-    f == F_PITCH        ? true             :
+    f == F_PITCH        ? pitch(as, o)     :
     f == F_QUIT         ? true             :
     f == F_RELEASE      ? setEnv(as, o)    :
     f == F_RELEASE_WAVE ? setWave(as, o)   :
