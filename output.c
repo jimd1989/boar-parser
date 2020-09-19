@@ -29,7 +29,7 @@ writeInt(Out *o, int n) {
 
 bool
 writeShort(Out *o, int16_t n) {
-  int *os = (int *)o->head;
+  int16_t *os = (int16_t *)o->head;
   if (isBounded(o, sizeof(n))) { *os = n; os++; o->head = (uint8_t *)os; }
   else                         { return false; }
   return true;
