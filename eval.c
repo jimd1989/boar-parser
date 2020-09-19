@@ -228,8 +228,8 @@ eval(Parse *p, Out *o) {
   ArgVal *as = p->args;
   Fn f = as[0].i;
   r =
-    f == F_NOTE_ON      ? noteOn(as++, o)  :
-    f == F_NOTE_OFF     ? noteOff(as++, o) :
+    f == F_NOTE_ON      ? noteOn(++as, o)  :
+    f == F_NOTE_OFF     ? noteOff(++as, o) :
     f == F_ATTACK       ? setEnv(as, o)    :
     f == F_ATTACK_WAVE  ? setWave(as, o)   :
     f == F_DECAY        ? setEnv(as, o)    :

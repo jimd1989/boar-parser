@@ -1,6 +1,7 @@
 #include <err.h>
 #include <stdio.h>
 
+#include "eval.h"
 #include "output.h"
 #include "parse.h"
 #include "sizes.h"
@@ -14,6 +15,8 @@ main(void) {
   while(fgets(p.buf, SIZE_IN, stdin) != NULL) {
     resetParse(&p);
     if (! parse(&p)) { showParseError(&p); continue; }
+    resetEval(&o);
+    eval(&p, &o);
   }
   return 0;
 }
