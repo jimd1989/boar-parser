@@ -5,10 +5,13 @@
 
 #define STREQ(s1, s2) (strcmp(s1, s2) == 0)
 
-/* make all of these FNV-1 hashes or something instead */
+/* TODO: make all of these FNV-1 hashes or something instead */
 
 int
 toI(char *s) {
+
+/* If s matches any of the following conditions, return its enum equivalent. */
+
   unsigned int n =
     s == NULL                ? ENUM_OFF              :
     STREQ(s, "off")          ? ENUM_OFF              :
@@ -50,5 +53,6 @@ toI(char *s) {
     STREQ(s, "sync")         ? ENUM_SYNC             :
     STREQ(s, "amp")          ? ENUM_AMP              : ENUM_UNKNOWN;
   if (n == ENUM_UNKNOWN) { warnx("unknown value %s", s); }
+
   return n;
 }
