@@ -252,3 +252,8 @@ eval(Parse *p, Out *o) {
     f == F_WAVE         ? setWave(as,o)    : false;
   return r;
 }
+
+bool
+loop(Parse *p) {
+  return (p->args[0].i != F_QUIT);
+}

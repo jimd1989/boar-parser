@@ -7,3 +7,4 @@
 
 void resetEval(Out *);
 bool eval(Parse *, Out *);
+bool loop(Parse *);
