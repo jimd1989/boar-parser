@@ -6,4 +6,4 @@
 
 #include "output.h"
 
-#define _O(x) if (! x) { return false; } /* output guard */
+#define _O(x) if (! x) return false /* output guard */
