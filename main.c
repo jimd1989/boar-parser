@@ -14,9 +14,10 @@ main(void) {
   warnx("Welcome. You can exit at any time by pressing q + enter.");
   while(fgets(p.buf, SIZE_IN, stdin) != NULL) {
     resetParse(&p);
-    if (! parse(&p)) { showParseError(&p); continue; }
+    if (! parse(&p))     { showParseError(&p); continue; }
     resetEval(&o);
-    eval(&p, &o);
+    if (! eval(&p, &o))  { continue; }
+    if (! writeFunc(&o)) { warnx ("write error"); continue; }
   }
   return 0;
 }

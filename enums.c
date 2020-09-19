@@ -1,3 +1,4 @@
+#include <err.h>
 #include <string.h>
 
 #include "enums.h"
@@ -8,7 +9,7 @@
 
 int
 toI(char *s) {
-  return
+  unsigned int n =
     s == NULL                ? ENUM_OFF              :
     STREQ(s, "off")          ? ENUM_OFF              :
     STREQ(s, "no")           ? ENUM_OFF              :
@@ -48,4 +49,6 @@ toI(char *s) {
     STREQ(s, "mix")          ? ENUM_MIX              :
     STREQ(s, "sync")         ? ENUM_SYNC             :
     STREQ(s, "amp")          ? ENUM_AMP              : ENUM_UNKNOWN;
+  if (n == ENUM_UNKNOWN) { warnx("unknown value %s", s); }
+  return n;
 }
