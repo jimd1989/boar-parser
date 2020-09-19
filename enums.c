@@ -37,13 +37,13 @@ toI(char *s) {
     STREQ(s, "exponential")  ? ENUM_EXPONENTIAL      :
     STREQ(s, "rexp")         ? ENUM_EXPONENTIAL * -1 :
     STREQ(s, "rexponential") ? ENUM_EXPONENTIAL * -1 :
-    STREQ(s, "log")          ? ENUM_EXPONENTIAL      :
-    STREQ(s, "logarithmic")  ? ENUM_EXPONENTIAL      :
+    STREQ(s, "log")          ? ENUM_LOGARITHMIC      :
+    STREQ(s, "logarithmic")  ? ENUM_LOGARITHMIC      :
     STREQ(s, "rlog")         ? ENUM_LOGARITHMIC * -1 :
     STREQ(s, "rlogarithmic") ? ENUM_LOGARITHMIC * -1 :
-    STREQ(s, "rand")         ? ENUM_LOGARITHMIC      :
-    STREQ(s, "random")       ? ENUM_LOGARITHMIC      :
-    STREQ(s, "noise")        ? ENUM_SINE             :
+    STREQ(s, "rand")         ? ENUM_NOISE            :
+    STREQ(s, "random")       ? ENUM_NOISE            :
+    STREQ(s, "noise")        ? ENUM_NOISE            :
     STREQ(s, "mod")          ? ENUM_MOD              :
     STREQ(s, "mix")          ? ENUM_MIX              :
     STREQ(s, "sync")         ? ENUM_SYNC             :

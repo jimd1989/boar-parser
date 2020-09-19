@@ -54,7 +54,7 @@ writeFloat(Out *o, float f) {
 bool
 writeEnum(Out *o, char *s) {
   int n = toI(s);
-  return n == ENUM_UNKNOWN ? false : writeInt(o, n);
+  return n == ENUM_UNKNOWN ? false : writeInt(o, n); /* change to byte */
 }
 
 bool
