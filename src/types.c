@@ -2,6 +2,9 @@
 
 char *
 showArgType(ArgType t) {
+
+/* Return the plaintext equivalent of an ArgType, for use in error messages. */
+
   switch (t) {
     case ARG_NIL:
       return "nothing ";
