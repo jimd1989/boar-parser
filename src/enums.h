@@ -5,10 +5,12 @@
 
 /* TODO: make it so that no enum can be a synonym for another, like how
  * 'flat' and 'no' are both zero valued. This may make it painful to fit all
- * textual representations inside a single byte, however. Especially if there
- * are multiple words for the same enum, like 'rand' and 'noise'. */
+ * textual representations inside a single byte, however. */
 
 #include <limits.h>
+#include <stdint.h>
+
+#include "sizes.h"
 
 typedef enum OnOff {
 
@@ -42,6 +44,57 @@ typedef enum ModType {
   ENUM_AMP
 } ModType;
 
-#define ENUM_UNKNOWN INT_MAX
+typedef struct EnumDef {
+
+/* Used to match a text token `key` against an enum `val`. */
+
+  char          * key;
+  uint8_t         val;
+} EnumDef;
+
+#define ENUM_UNKNOWN INT_MAX /* Returned by toI() when no enum can be found. */
+
+/* Master list of all possible enums, ordered alphabetically so that it can be
+ * binary searched against. */
+static const EnumDef ENUMS[SIZE_ENUMS] = {
+  {"amp",          ENUM_AMP},
+  {"exp",          ENUM_EXPONENTIAL},
+  {"exponential",  ENUM_EXPONENTIAL},
+  {"fixed",        ENUM_ON},
+  {"flat",         ENUM_FLAT},
+  {"log",          ENUM_LOGARITHMIC},
+  {"logarithmic",  ENUM_LOGARITHMIC},
+  {"mix",          ENUM_MIX},
+  {"mod",          ENUM_MOD},
+  {"no",           ENUM_OFF},
+  {"noise",        ENUM_NOISE},
+  {"off",          ENUM_OFF},
+  {"on",           ENUM_ON },
+  {"silence",      ENUM_FLAT},
+  {"ramp",         ENUM_RAMP},
+  {"rand",         ENUM_NOISE},
+  {"random",       ENUM_NOISE},
+  {"rexp",         ENUM_EXPONENTIAL * -1},
+  {"rexponential", ENUM_EXPONENTIAL * -1},
+  {"rlog",         ENUM_LOGARITHMIC * -1},
+  {"rlogarithmic", ENUM_LOGARITHMIC * -1},
+  {"rramp",        ENUM_RAMP * -1},
+  {"rsaw",         ENUM_RAMP * -1},
+  {"rsin",         ENUM_SINE * -1},
+  {"rsine",        ENUM_SINE * -1},
+  {"rsq",          ENUM_SQUARE * -1},
+  {"rsquare",      ENUM_SQUARE * -1},
+  {"rtri",         ENUM_TRIANGLE * -1},
+  {"rtriangle",    ENUM_TRIANGLE * -1},
+  {"saw",          ENUM_RAMP},
+  {"sin",          ENUM_SINE},
+  {"sine",         ENUM_SINE},
+  {"sq",           ENUM_SQUARE},
+  {"square",       ENUM_SQUARE},
+  {"sync",         ENUM_SYNC},
+  {"tri",          ENUM_TRIANGLE},
+  {"triangle",     ENUM_TRIANGLE},
+  {"yes",          ENUM_ON},
+};
 
 int toI(char *);
