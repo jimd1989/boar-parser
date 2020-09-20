@@ -65,7 +65,7 @@ writeByte(Out *o, uint8_t n) {
 bool
 writeFloat(Out *o, float f) {
 
-/* Write a 4 byte float to the output stream. */  
+/* Write a 4 byte float to the output stream. */
 
   float *os = (float *)o->head;
 

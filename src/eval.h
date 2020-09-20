@@ -1,5 +1,7 @@
 #pragma once
 
+/* Checking validity of parsed arguments and writing them to output. */
+
 #include <stdbool.h>
 
 #include "output.h"
