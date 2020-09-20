@@ -52,7 +52,7 @@ typedef struct EnumDef {
   uint8_t         val;
 } EnumDef;
 
-#define ENUM_UNKNOWN INT_MAX /* Returned by toI() when no enum can be found. */
+#define ENUM_UNKNOWN UCHAR_MAX /* Returned by toI() when no enum matches. */
 
 /* Master list of all possible enums, ordered alphabetically so that it can be
  * binary searched against. */
@@ -70,7 +70,6 @@ static const EnumDef ENUMS[SIZE_ENUMS] = {
   {"noise",        ENUM_NOISE},
   {"off",          ENUM_OFF},
   {"on",           ENUM_ON },
-  {"silence",      ENUM_FLAT},
   {"ramp",         ENUM_RAMP},
   {"rand",         ENUM_NOISE},
   {"random",       ENUM_NOISE},
@@ -87,6 +86,7 @@ static const EnumDef ENUMS[SIZE_ENUMS] = {
   {"rtri",         ENUM_TRIANGLE * -1},
   {"rtriangle",    ENUM_TRIANGLE * -1},
   {"saw",          ENUM_RAMP},
+  {"silence",      ENUM_FLAT},
   {"sin",          ENUM_SINE},
   {"sine",         ENUM_SINE},
   {"sq",           ENUM_SQUARE},
@@ -97,4 +97,4 @@ static const EnumDef ENUMS[SIZE_ENUMS] = {
   {"yes",          ENUM_ON},
 };
 
-int toI(char *);
+uint8_t toI(char *);
