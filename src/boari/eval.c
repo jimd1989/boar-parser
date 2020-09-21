@@ -73,7 +73,6 @@ noteOn(ArgVal *as, Out *o) {
   _O(boundI(0, MIDI_MAX, as[0].i));
   _O(boundI(0, MIDI_MAX, as[1].i));
   _O(boundI(1, MIDI_CHANNELS, as[2].i));
-  _O(writeHead(o, (int16_t)3));
   _O(writeByte(o, (uint8_t)(MIDI_NOTE_ON + (as[2].i - 1))));
   _O(writeByte(o, (uint8_t)as[0].i));
   _O(writeByte(o, (uint8_t)as[1].i));
@@ -91,7 +90,6 @@ noteOff(ArgVal *as, Out *o) {
 
   _O(boundI(0, MIDI_MAX, as[0].i));
   _O(boundI(1, MIDI_CHANNELS, as[1].i));
-  _O(writeHead(o, (int16_t)3));
   _O(writeByte(o, (uint8_t)(MIDI_NOTE_ON + (as[1].i - 1))));
   _O(writeByte(o, (uint8_t)as[0].i));
   _O(writeByte(o, (uint8_t)0));

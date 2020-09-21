@@ -100,7 +100,10 @@ writeFunc(Out *o) {
 
 /* Print the full output stream to stdout. */
 
-  return !fwrite(o->buf, 1, o->head - o->buf, stdout) ? false : true;
+  int n = fwrite(o->buf, 1, o->head - o->buf, stdout);
+ 
+  if (n) { fflush(stdout); return true;}
+  else   { return false;}
 }
 
 Out
