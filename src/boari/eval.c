@@ -6,6 +6,7 @@
  * more information. */
 
 #include "../constants/funcs.h"
+#include "../constants/magic.h"
 #include "../constants/midi.h"
 #include "control.h"
 #include "eval.h"
@@ -287,7 +288,7 @@ echo(ArgVal *as, Parse *p, Out *o) {
   _O(eval(p, o));
   endPos = (char *)o->head;
   o->head = (uint8_t *)startPos;
-  _O(writeHead(o, (int16_t)(endPos - (startPos + sizeof(OUT_WORD)))));
+  _O(writeHead(o, (int16_t)(endPos - (startPos + sizeof(BOAR_WORD)))));
   o->head = (uint8_t *)endPos;
 
   return true;

@@ -19,8 +19,6 @@ typedef struct Out {
   uint8_t       * head;
 } Out;
 
-#define OUT_WORD 1918988130 /* magic word "boar" for output header */
-
 bool writeInt(Out *, int n);
 bool writeByte(Out *, uint8_t n);
 bool writeFloat(Out *, float);

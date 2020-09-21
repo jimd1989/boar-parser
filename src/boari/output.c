@@ -5,6 +5,7 @@
 #include <string.h>
 
 #include "../constants/enums.h"
+#include "../constants/magic.h"
 #include "output.h"
 #include "parse.h"
 #include "signatures.h"
@@ -91,7 +92,7 @@ writeHead(Out *o, int16_t n) {
 /* Write the magic word and payload size `n` to the output stream, signalling
  * the start of a boar message. */
 
-  if (writeInt(o, OUT_WORD) == false) { return false; }
+  if (writeInt(o, BOAR_WORD) == false) { return false; }
   return writeShort(o, n);
 }
 

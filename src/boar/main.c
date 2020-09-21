@@ -1,8 +1,9 @@
-#include <err.h>
 #include "input.h"
 
 int main(void) {
-  reader();
-  warnx("Reading over");
+  In i = makeIn();
+  while(input(&i)) {
+    ;
+  }
   return 0;
 }
