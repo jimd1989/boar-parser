@@ -25,7 +25,8 @@ static bool assignEnv(ArgVal *, Out *);
 static bool loudness(ArgVal *, Out *);
 static bool amplitude(ArgVal *, Out *);
 static bool modulate(ArgVal *, Out *);
-static bool setText(ArgVal *, Out *);
+static bool setEnvText(ArgVal *, Out *);
+static bool setOscText(ArgVal *, Out *);
 static bool pitch(ArgVal *, Out *);
 static bool quit(ArgVal *, Out *);
 static bool touch(ArgVal *, Out *);
@@ -63,7 +64,7 @@ boundFError(float n, float m, float x) {
 
 /* Invoked when a float is out of range. */
 
-  warnx("%f not between %f and %f", x, n, m);
+  warnx("%.3f not between %.3f and %.3f", x, n, m);
 }
 
 static bool
@@ -105,6 +106,7 @@ setEnv(ArgVal *as, Out *o) {
 
   int16_t size = sizeof(uint8_t) + sizeof(int) + (sizeof(float) * 2);
 
+  _O(boundI(0, SIZE_ENVS, as[1].i));
   _O(writeHead(o, size));
   _O(writeByte(o, (uint8_t)as[0].i));
   _O(writeInt(o, as[1].i));
@@ -115,12 +117,29 @@ setEnv(ArgVal *as, Out *o) {
 }
 
 static bool
-setText(ArgVal *as, Out *o) {
+setEnvText(ArgVal *as, Out *o) {
 
-/* Write a text selection command to boar: A, D, R, O, w */
+/* Write an envelope text command to boar: A, D, R, O */
 
   int16_t size = (sizeof(uint8_t) *2) + sizeof(int);
 
+  _O(boundI(0, SIZE_ENVS, as[1].i));
+  _O(writeHead(o, size));
+  _O(writeByte(o, (uint8_t)as[0].i));
+  _O(writeInt(o, as[1].i));
+  _O(writeEnum(o, as[2].s));
+
+  return true;
+}
+
+static bool
+setOscText(ArgVal *as, Out *o) {
+
+/* Write an osc text command to boar: k, w */
+
+  int16_t size = (sizeof(uint8_t) *2) + sizeof(int);
+
+  _O(boundI(0, SIZE_OSCS, as[1].i));
   _O(writeHead(o, size));
   _O(writeByte(o, (uint8_t)as[0].i));
   _O(writeInt(o, as[1].i));
@@ -136,6 +155,7 @@ assignEnv(ArgVal *as, Out *o) {
 
   int16_t size = sizeof(uint8_t) + sizeof(int) + sizeof(int) + sizeof(float);
 
+  _O(boundI(0, SIZE_OSCS, as[1].i));
   _O(boundF(0.0f, 1.0f, as[3].f));
   _O(writeHead(o, size));
   _O(writeByte(o, (uint8_t)as[0].i));
@@ -170,6 +190,7 @@ amplitude(ArgVal *as, Out *o) {
 
   int16_t size = sizeof(uint8_t) + sizeof(int) + (sizeof(float) * 3);
 
+  _O(boundI(0, SIZE_OSCS, as[1].i));
   _O(boundF(0.0f, 1.0f, as[2].f));
   _O(boundF(0.0f, 1.0f, as[3].f));
   _O(boundF(0.0f, 1.0f, as[4].f));
@@ -190,7 +211,8 @@ modulate(ArgVal *as, Out *o) {
 
   int16_t size = (sizeof(uint8_t) * 2) + (sizeof(int) * 2) + sizeof(float);
 
-  _O(boundF(0.0f, 1.0f, as[3].f));
+  _O(boundI(0, SIZE_OSCS, as[1].i));
+  _O(boundI(0, SIZE_OSCS, as[2].i));
   _O(writeHead(o, size));
   _O(writeByte(o, (uint8_t)as[0].i));
   _O(writeInt(o, as[1].i));
@@ -208,6 +230,7 @@ pitch(ArgVal *as, Out *o) {
 
   int16_t size = (sizeof(uint8_t) * 2) + sizeof(int) + (sizeof(float) * 2);
 
+  _O(boundI(0, SIZE_OSCS, as[1].i));
   _O(writeHead(o, size));
   _O(writeByte(o, (uint8_t)as[0].i));
   _O(writeInt(o, as[1].i));
@@ -238,6 +261,7 @@ touch(ArgVal *as, Out *o) {
 
   int16_t size = sizeof(uint8_t) + sizeof(int) + (sizeof(float) * 2);
 
+  _O(boundI(0, SIZE_OSCS, as[1].i));
   _O(boundF(0.0f, 1.0f, as[2].f));
   _O(boundF(0.0f, 1.0f, as[3].f));
   _O(writeHead(o, size));
@@ -312,27 +336,27 @@ eval(Parse *p, Out *o) {
   Fn f = as[0].i;
 
   r =
-    f == F_NOTE_ON      ? noteOn(++as, o)  :
-    f == F_NOTE_OFF     ? noteOff(++as, o) :
-    f == F_ATTACK       ? setEnv(as, o)    :
-    f == F_ATTACK_WAVE  ? setText(as, o)   :
-    f == F_DECAY        ? setEnv(as, o)    :
-    f == F_DECAY_WAVE   ? setText(as, o)   :
-    f == F_ENV_ASSIGN   ? assignEnv(as, o) :
-    f == F_ECHO         ? echo(as, p, o)   :
-    f == F_KEY_CURVE    ? setText(as, o)   :
-    f == F_LOUDNESS     ? loudness(as, o)  :
-    f == F_AMPLITUDE    ? amplitude(as, o) :
-    f == F_MODULATE     ? modulate(as, o)  :
-    f == F_ENV_LOOP     ? setText(as, o)   :
-    f == F_PITCH        ? pitch(as, o)     :
-    f == F_QUIT         ? quit(as, o)      :
-    f == F_RELEASE      ? setEnv(as, o)    :
-    f == F_RELEASE_WAVE ? setText(as, o)   :
-    f == F_SUSTAIN      ? setEnv(as, o)    :
-    f == F_TOUCH        ? touch(as, o)     :
-    f == F_TUNE         ? tune(as, o)      :
-    f == F_WAVE         ? setText(as,o)    : false;
+    f == F_NOTE_ON      ? noteOn(++as, o)   :
+    f == F_NOTE_OFF     ? noteOff(++as, o)  :
+    f == F_ATTACK       ? setEnv(as, o)     :
+    f == F_ATTACK_WAVE  ? setEnvText(as, o) :
+    f == F_DECAY        ? setEnv(as, o)     :
+    f == F_DECAY_WAVE   ? setEnvText(as, o) :
+    f == F_ENV_ASSIGN   ? assignEnv(as, o)  :
+    f == F_ECHO         ? echo(as, p, o)    :
+    f == F_KEY_CURVE    ? setOscText(as, o) :
+    f == F_LOUDNESS     ? loudness(as, o)   :
+    f == F_AMPLITUDE    ? amplitude(as, o)  :
+    f == F_MODULATE     ? modulate(as, o)   :
+    f == F_ENV_LOOP     ? setEnvText(as, o) :
+    f == F_PITCH        ? pitch(as, o)      :
+    f == F_QUIT         ? quit(as, o)       :
+    f == F_RELEASE      ? setEnv(as, o)     :
+    f == F_RELEASE_WAVE ? setEnvText(as, o) :
+    f == F_SUSTAIN      ? setEnv(as, o)     :
+    f == F_TOUCH        ? touch(as, o)      :
+    f == F_TUNE         ? tune(as, o)       :
+    f == F_WAVE         ? setOscText(as,o)  : false;
 
   return r;
 }
