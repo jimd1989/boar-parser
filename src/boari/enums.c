@@ -15,6 +15,8 @@ toI(char *s) {
   int r = SIZE_ENUMS - 1;
   int c = r / 2;
   char *kg, *kx = NULL;
+
+  if (s == NULL) { return ENUM_OFF; }
   while (l <= r) {
     c = l + (r - l) / 2;
     for (kg = s, kx = ENUMS[c].key; *kg != '\0' || *kx != '\0'; kg++, kx++) {
