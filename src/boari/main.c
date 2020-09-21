@@ -1,10 +1,10 @@
 #include <err.h>
 #include <stdio.h>
 
+#include "../constants/sizes.h"
 #include "eval.h"
 #include "output.h"
 #include "parse.h"
-#include "sizes.h"
 
 int
 main(void) {

@@ -5,10 +5,11 @@
 #include <stdio.h>
 #include <string.h>
 
-#include "funcs.h"
+#include "../constants/funcs.h"
+#include "../constants/sizes.h"
+#include "alphabets.h"
 #include "parse.h"
 #include "signatures.h"
-#include "sizes.h"
 #include "types.h"
 
 static bool isModifier(const char);

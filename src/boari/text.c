@@ -2,8 +2,9 @@
 #include <stdint.h>
 #include <string.h>
 
-#include "enums.h"
-#include "sizes.h"
+#include "../constants/enums.h"
+#include "../constants/sizes.h"
+#include "text.h"
 
 uint8_t
 toI(char *s) {
@@ -12,8 +13,8 @@ toI(char *s) {
  * associated with `s` if it exists. */
 
   int l = 0;
+  int c = 0;
   int r = SIZE_ENUMS - 1;
-  int c = r / 2;
   char *kg, *kx = NULL;
 
   if (s == NULL) { return ENUM_OFF; }

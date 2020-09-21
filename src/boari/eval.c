@@ -5,9 +5,9 @@
 /* This module makes use of the guard macro _O. Please refer to control.h for
  * more information. */
 
+#include "../constants/funcs.h"
 #include "control.h"
 #include "eval.h"
-#include "funcs.h"
 #include "parse.h"
 #include "midi.h"
 #include "output.h"

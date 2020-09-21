@@ -4,8 +4,8 @@
 
 #include <stdbool.h>
 
+#include "../constants/sizes.h"
 #include "signatures.h"
-#include "sizes.h"
 #include "types.h"
 
 typedef struct Parse {

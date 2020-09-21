@@ -1,7 +1,7 @@
 #include <string.h>
 
+#include "../constants/sizes.h"
 #include "signatures.h"
-#include "sizes.h"
 #include "types.h"
 
 static void cat(char *, char *);

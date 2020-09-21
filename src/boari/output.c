@@ -4,10 +4,11 @@
 #include <stdio.h>
 #include <string.h>
 
-#include "enums.h"
+#include "../constants/enums.h"
 #include "output.h"
 #include "parse.h"
 #include "signatures.h"
+#include "text.h"
 #include "types.h"
 
 static bool isBounded(Out *, int);

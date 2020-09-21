@@ -5,7 +5,7 @@
 #include <stdlib.h>
 
 #include "nums.h"
-#include "sizes.h"
+#include "../constants/sizes.h"
 #include "types.h"
 
 typedef struct Sig {

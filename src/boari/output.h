@@ -5,8 +5,8 @@
 #include <stdbool.h>
 #include <stdint.h>
 
+#include "../constants/sizes.h"
 #include "parse.h"
-#include "sizes.h"
 #include "types.h"
 
 typedef struct Out {
