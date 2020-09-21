@@ -104,12 +104,12 @@ setEnv(ArgVal *as, Out *o) {
 
 /* Write an envelope value command to boar: a, d, r, s */
 
-  int16_t size = sizeof(uint8_t) + sizeof(int) + (sizeof(float) * 2);
+  int16_t size = (sizeof(uint8_t) * 2) + (sizeof(float) * 2);
 
   _O(boundI(0, SIZE_ENVS, as[1].i));
   _O(writeHead(o, size));
   _O(writeByte(o, (uint8_t)as[0].i));
-  _O(writeInt(o, as[1].i));
+  _O(writeByte(o, as[1].i));
   _O(writeFloat(o, as[2].f));
   _O(writeFloat(o, as[3].f));
 
@@ -121,12 +121,12 @@ setEnvText(ArgVal *as, Out *o) {
 
 /* Write an envelope text command to boar: A, D, R, O */
 
-  int16_t size = (sizeof(uint8_t) *2) + sizeof(int);
+  int16_t size = sizeof(uint8_t) * 3;
 
   _O(boundI(0, SIZE_ENVS, as[1].i));
   _O(writeHead(o, size));
   _O(writeByte(o, (uint8_t)as[0].i));
-  _O(writeInt(o, as[1].i));
+  _O(writeByte(o, as[1].i));
   _O(writeEnum(o, as[2].s));
 
   return true;
@@ -137,12 +137,12 @@ setOscText(ArgVal *as, Out *o) {
 
 /* Write an osc text command to boar: k, w */
 
-  int16_t size = (sizeof(uint8_t) *2) + sizeof(int);
+  int16_t size = sizeof(uint8_t) * 3;
 
   _O(boundI(0, SIZE_OSCS, as[1].i));
   _O(writeHead(o, size));
   _O(writeByte(o, (uint8_t)as[0].i));
-  _O(writeInt(o, as[1].i));
+  _O(writeByte(o, as[1].i));
   _O(writeEnum(o, as[2].s));
 
   return true;
@@ -153,14 +153,15 @@ assignEnv(ArgVal *as, Out *o) {
 
 /* Write the e command to boar. */
 
-  int16_t size = sizeof(uint8_t) + sizeof(int) + sizeof(int) + sizeof(float);
+  int16_t size = (sizeof(uint8_t) * 3) + sizeof(float);
 
-  _O(boundI(0, SIZE_OSCS, as[1].i));
+  _O(boundI(0, SIZE_ENVS, as[1].i));
+  _O(boundI(0, SIZE_OSCS, as[2].i));
   _O(boundF(0.0f, 1.0f, as[3].f));
   _O(writeHead(o, size));
   _O(writeByte(o, (uint8_t)as[0].i));
-  _O(writeInt(o, as[1].i));
-  _O(writeInt(o, as[2].i));
+  _O(writeByte(o, as[1].i));
+  _O(writeByte(o, as[2].i));
   _O(writeFloat(o, as[3].f));
 
   return true;
@@ -188,7 +189,7 @@ amplitude(ArgVal *as, Out *o) {
 
 /* Write the L command to boar. */
 
-  int16_t size = sizeof(uint8_t) + sizeof(int) + (sizeof(float) * 3);
+  int16_t size = (sizeof(uint8_t) * 2) + (sizeof(float) * 3);
 
   _O(boundI(0, SIZE_OSCS, as[1].i));
   _O(boundF(0.0f, 1.0f, as[2].f));
@@ -196,7 +197,7 @@ amplitude(ArgVal *as, Out *o) {
   _O(boundF(0.0f, 1.0f, as[4].f));
   _O(writeHead(o, size));
   _O(writeByte(o, (uint8_t)as[0].i));
-  _O(writeInt(o, as[1].i));
+  _O(writeByte(o, as[1].i));
   _O(writeFloat(o, as[2].f));
   _O(writeFloat(o, as[3].f));
   _O(writeFloat(o, as[4].f));
@@ -209,14 +210,14 @@ modulate(ArgVal *as, Out *o) {
 
 /* Write the m command to boar. */
 
-  int16_t size = (sizeof(uint8_t) * 2) + (sizeof(int) * 2) + sizeof(float);
+  int16_t size = (sizeof(uint8_t) * 4) + sizeof(float);
 
   _O(boundI(0, SIZE_OSCS, as[1].i));
   _O(boundI(0, SIZE_OSCS, as[2].i));
   _O(writeHead(o, size));
   _O(writeByte(o, (uint8_t)as[0].i));
-  _O(writeInt(o, as[1].i));
-  _O(writeInt(o, as[2].i));
+  _O(writeByte(o, as[1].i));
+  _O(writeByte(o, as[2].i));
   _O(writeFloat(o, as[3].f));
   _O(writeEnum(o, as[4].s));
 
@@ -228,12 +229,12 @@ pitch(ArgVal *as, Out *o) {
 
 /* Write the p command to boar. */
 
-  int16_t size = (sizeof(uint8_t) * 2) + sizeof(int) + (sizeof(float) * 2);
+  int16_t size = (sizeof(uint8_t) * 3) + (sizeof(float) * 2);
 
   _O(boundI(0, SIZE_OSCS, as[1].i));
   _O(writeHead(o, size));
   _O(writeByte(o, (uint8_t)as[0].i));
-  _O(writeInt(o, as[1].i));
+  _O(writeByte(o, as[1].i));
   _O(writeFloat(o, as[2].f));
   _O(writeFloat(o, as[3].f));
   _O(writeEnum(o, as[4].s));
@@ -259,14 +260,14 @@ touch(ArgVal *as, Out *o) {
 
 /* Write the t command to boar. */
 
-  int16_t size = sizeof(uint8_t) + sizeof(int) + (sizeof(float) * 2);
+  int16_t size = (sizeof(uint8_t) * 2) + (sizeof(float) * 2);
 
   _O(boundI(0, SIZE_OSCS, as[1].i));
   _O(boundF(0.0f, 1.0f, as[2].f));
   _O(boundF(0.0f, 1.0f, as[3].f));
   _O(writeHead(o, size));
   _O(writeByte(o, (uint8_t)as[0].i));
-  _O(writeInt(o, as[1].i));
+  _O(writeByte(o, as[1].i));
   _O(writeFloat(o, as[2].f));
   _O(writeFloat(o, as[3].f));
 
@@ -278,12 +279,12 @@ tune(ArgVal *as, Out *o) {
 
 /* Write the T command to boar. */
 
-  int16_t size = sizeof(uint8_t) + sizeof(int) + (sizeof(float) * 2);
+  int16_t size = (sizeof(uint8_t) * 2) + (sizeof(float) * 2);
 
   _O(boundI(0, MIDI_MAX, as[1].i));
   _O(writeHead(o, size));
   _O(writeByte(o, (uint8_t)as[0].i));
-  _O(writeInt(o, as[1].i));
+  _O(writeByte(o, as[1].i));
   _O(writeFloat(o, as[2].f));
   _O(writeFloat(o, as[3].f));
 

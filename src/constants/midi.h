@@ -1,5 +1,7 @@
 #pragma once
 
+/* Interfacing with standard MIDI opcodes. */
+
 #include <stdbool.h>
 
 #define MIDI_CHANNELS 16  /* total number of MIDI channels */
