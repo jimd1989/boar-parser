@@ -9,10 +9,22 @@
 
 static bool isNote(In *);
 static bool isBoar(In *);
+static void readNote(In *);
 
 static bool
 isNote(In *i) {
   return (i->size > 2 && IS_NOTE(*i->head));
+}
+
+static void
+readNote(In *i) {
+  uint8_t b1 = i->head[0];
+  uint8_t b2 = i->head[1];
+  uint8_t b3 = i->head[2];
+  i->size -= 3;
+  i->head += 3;
+  if ((b1 - MIDI_NOTE_ON) != i->chan) { return; }
+  warnx("note %d %s", b2, b3 == 0 ? "off" : "on");
 }
 
 static bool
@@ -25,7 +37,7 @@ bool
 input(In *i) {
   i->head = i->buf;
   i->size = read(STDIN_FILENO, i->buf, SIZE_OUT);
-  if (isNote(i)) { warnx("note %d %d", i->head[1], i->head[2]); }
+  if (isNote(i)) { readNote(i); }
   if (isBoar(i)) { warnx("boar command"); }
   return true;
 }

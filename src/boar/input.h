@@ -9,6 +9,7 @@ typedef struct In {
   uint8_t         buf[SIZE_OUT];
   uint8_t       * head;
   int             size;
+  int             chan;
 } In;
 
 bool input(In *);
