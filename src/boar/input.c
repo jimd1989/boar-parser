@@ -3,19 +3,27 @@
 #include <stdint.h>
 #include <unistd.h>
 
+#include "../constants/funcs.h"
 #include "../constants/magic.h"
 #include "../constants/midi.h"
 #include "../constants/sizes.h"
 #include "input.h"
 
+static bool error(void);
 static void advance(In *, int);
-static uint8_t readByte(In *i);
-static int16_t readShort(In *i);
-static int readInt(In *i);
+static bool readByte(In *, uint8_t *);
+static bool readShort(In *, int16_t *);
+static bool readInt(In *, int *);
 static bool isNote(In *);
 static void readNote(In *);
 static bool isBoar(In *);
 static void readBoar(In *);
+
+static bool
+error(void) {
+  warnx("misaligned input");
+  return false;
+}
 
 static void
 advance(In *i, int n) {
@@ -23,25 +31,30 @@ advance(In *i, int n) {
   i->head += n;
 }
 
-static uint8_t
-readByte(In *i) {
-  uint8_t x = *i->head;
-  advance(i, sizeof(x));
-  return x;
+static bool
+readByte(In *i, uint8_t *x) {
+  if ((int)sizeof(*x) > i->size) { error(); }
+  if (x != NULL)                 { *x = *i->head; }
+  advance(i, sizeof(*x));
+  return true;
 }
 
-static int16_t
-readShort(In *i) {
+static bool
+readShort(In *i, int16_t *x) {
   int16_t *xs = (int16_t *)i->head;
-  advance(i, sizeof(*xs));
-  return xs[0];
+  if ((int)sizeof(*x) > i->size) { error(); }
+  if (x != NULL)                 { *x = *xs; }
+  advance(i, sizeof(*x));
+  return true;
 }
 
-static int
-readInt(In *i) {
+static bool
+readInt(In *i, int *x) {
   int *xs = (int *)i->head;
-  advance(i, sizeof(*xs));
-  return xs[0];
+  if ((int)sizeof(*x) > i->size) { error(); }
+  if (x != NULL)                 { *x = *xs; }
+  advance(i, sizeof(*x));
+  return true;
 }
 
 static bool
@@ -51,11 +64,11 @@ isNote(In *i) {
 
 static void
 readNote(In *i) {
-  uint8_t b1 = readByte(i);
-  uint8_t b2 = readByte(i);
-  uint8_t b3 = readByte(i);
-  if ((b1 - MIDI_NOTE_ON) != i->chan) { return; }
-  warnx("note %d %s", b2, b3 == 0 ? "off" : "on");
+  uint8_t b = 0;
+  if (! readByte(i, &b)) { i->cmd = F_ERROR; return; }
+  b -= MIDI_NOTE_ON;
+  if (b != i->chan)      { i->cmd = F_ERROR; (void)readShort(i, NULL); return; }
+  i->cmd = F_NOTE_ON;
 }
 
 static bool
@@ -66,11 +79,9 @@ isBoar(In *i) {
 
 static void
 readBoar(In *i) {
-  (void)readInt(i);
-  i->cmdSize = readShort(i);
-  i->cmd = readByte(i);
-  advance(i, i->cmdSize);
-  warnx("boar command %d", i->cmd);
+  if (! readInt(i, NULL))          { i->cmd = F_ERROR; return; }
+  if (! readShort(i, &i->cmdSize)) { i->cmd = F_ERROR; return; }
+  if (! readByte(i, &i->cmd))      { i->cmd = F_ERROR; return; }
 }
 
 bool
@@ -78,9 +89,11 @@ input(In *i) {
   i->head = i->buf;
   i->size = read(STDIN_FILENO, i->buf, SIZE_OUT);
   while (i->size > 0) {
-    if (isNote(i))      { readNote(i); }
-    else if (isBoar(i)) { readBoar(i); }
-    else                { advance(i, 1); }
+    if (isNote(i))         { readNote(i); }
+    else if (isBoar(i))    { readBoar(i); }
+    else                   { i->cmd = F_ERROR; advance(i, 1); }
+    if (i->cmd != F_ERROR) { warnx("dispatch function %d", i->cmd); }
+    if (i->cmd == F_QUIT)  { return false; }
   }
   return true;
 }
