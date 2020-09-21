@@ -6,10 +6,10 @@
  * more information. */
 
 #include "../constants/funcs.h"
+#include "../constants/midi.h"
 #include "control.h"
 #include "eval.h"
 #include "parse.h"
-#include "midi.h"
 #include "output.h"
 #include "types.h"
 
