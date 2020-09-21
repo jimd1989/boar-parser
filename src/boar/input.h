@@ -10,6 +10,8 @@ typedef struct In {
   uint8_t       * head;
   int             size;
   int             chan;
+  int16_t         cmdSize;
+  uint8_t         cmd;
 } In;
 
 bool input(In *);
