@@ -7,10 +7,10 @@
 #include "../constants/magic.h"
 #include "../constants/midi.h"
 #include "../constants/sizes.h"
+#include "dispatch.h"
 #include "input.h"
 
 static bool error(void);
-static void advance(In *, int);
 static bool readByte(In *, uint8_t *);
 static bool readShort(In *, int16_t *);
 static bool readInt(In *, int *);
@@ -25,7 +25,7 @@ error(void) {
   return false;
 }
 
-static void
+void
 advance(In *i, int n) {
   i->size -= n;
   i->head += n;
@@ -92,7 +92,7 @@ input(In *i) {
     if (isNote(i))         { readNote(i); }
     else if (isBoar(i))    { readBoar(i); }
     else                   { i->cmd = F_ERROR; advance(i, 1); }
-    if (i->cmd != F_ERROR) { warnx("dispatch function %d", i->cmd); }
+    if (i->cmd != F_ERROR) { (void)dispatch(i); }
     if (i->cmd == F_QUIT)  { return false; }
   }
   return true;

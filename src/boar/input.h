@@ -14,5 +14,6 @@ typedef struct In {
   uint8_t         cmd;
 } In;
 
+void advance(In *, int);
 bool input(In *);
 In makeIn(void);

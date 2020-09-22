@@ -302,6 +302,7 @@ echo(ArgVal *as, Parse *p, Out *o) {
  * sizes of nested messages are accurate. */
 
   char *startPos, *endPos = NULL;
+  int size = (sizeof(BOAR_WORD) * 2) + sizeof(uint8_t);
 
   startPos = p->buf;
   p->buf = as[1].s;
@@ -309,11 +310,11 @@ echo(ArgVal *as, Parse *p, Out *o) {
   p->buf = startPos;
   startPos = (char *)o->head;
   _O(writeHead(o, (int16_t)0));
-  _O(writeByte(o, (uint8_t)as[0].i));
+  _O(writeByte(o, (uint8_t)F_ECHO));
   _O(eval(p, o));
   endPos = (char *)o->head;
   o->head = (uint8_t *)startPos;
-  _O(writeHead(o, (int16_t)(endPos - (startPos + sizeof(BOAR_WORD)))));
+  _O(writeHead(o, (int16_t)(endPos - (startPos + size))));
   o->head = (uint8_t *)endPos;
 
   return true;
