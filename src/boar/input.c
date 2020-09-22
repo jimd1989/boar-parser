@@ -28,6 +28,7 @@ error(void) {
 void
 advance(In *i, int n) {
   i->size -= n;
+  i->cmdSize -= n;
   i->head += n;
 }
 
