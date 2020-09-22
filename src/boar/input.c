@@ -11,9 +11,6 @@
 #include "input.h"
 
 static bool error(void);
-static bool readByte(In *, uint8_t *);
-static bool readShort(In *, int16_t *);
-static bool readInt(In *, int *);
 static bool isNote(In *);
 static void readNote(In *);
 static bool isBoar(In *);
@@ -28,32 +25,44 @@ error(void) {
 void
 advance(In *i, int n) {
   i->size -= n;
-  i->cmdSize -= n;
+  if (i->cmdSize > 0) { i->cmdSize -= n; }
   i->head += n;
 }
 
-static bool
-readByte(In *i, uint8_t *x) {
-  if ((int)sizeof(*x) > i->size) { error(); }
-  if (x != NULL)                 { *x = *i->head; }
+bool
+readByte(In *i, uint8_t *x, bool cmd) {
+  if ((int)sizeof(*x) > i->size)        { error(); }
+  if (cmd && (int)sizeof(*x) > i->size) { error(); }
+  if (x != NULL)                        { *x = *i->head; }
   advance(i, sizeof(*x));
   return true;
 }
-
-static bool
-readShort(In *i, int16_t *x) {
+bool
+readShort(In *i, int16_t *x, bool cmd) {
   int16_t *xs = (int16_t *)i->head;
-  if ((int)sizeof(*x) > i->size) { error(); }
-  if (x != NULL)                 { *x = *xs; }
+  if ((int)sizeof(*x) > i->size)        { error(); }
+  if (cmd && (int)sizeof(*x) > i->size) { error(); }
+  if (x != NULL)                        { *x = *xs; }
   advance(i, sizeof(*x));
   return true;
 }
 
-static bool
-readInt(In *i, int *x) {
+bool
+readInt(In *i, int *x, bool cmd) {
   int *xs = (int *)i->head;
-  if ((int)sizeof(*x) > i->size) { error(); }
-  if (x != NULL)                 { *x = *xs; }
+  if ((int)sizeof(*x) > i->size)        { error(); }
+  if (cmd && (int)sizeof(*x) > i->size) { error(); }
+  if (x != NULL)                        { *x = *xs; }
+  advance(i, sizeof(*x));
+  return true;
+}
+
+bool
+readFloat(In *i, float *x, bool cmd) {
+  float *xs = (float *)i->head;
+  if ((int)sizeof(*x) > i->size)        { error(); }
+  if (cmd && (int)sizeof(*x) > i->size) { error(); }
+  if (x != NULL)                        { *x = *xs; }
   advance(i, sizeof(*x));
   return true;
 }
@@ -66,9 +75,11 @@ isNote(In *i) {
 static void
 readNote(In *i) {
   uint8_t b = 0;
-  if (! readByte(i, &b)) { i->cmd = F_ERROR; return; }
+  if (! readByte(i, &b, false)) { i->cmd = F_ERROR; return; }
   b -= MIDI_NOTE_ON;
-  if (b != i->chan)      { i->cmd = F_ERROR; (void)readShort(i, NULL); return; }
+  if (b != i->chan) { 
+    i->cmd = F_ERROR; (void)readShort(i, NULL, false); return; 
+  }
   i->cmd = F_NOTE_ON;
 }
 
@@ -80,9 +91,9 @@ isBoar(In *i) {
 
 static void
 readBoar(In *i) {
-  if (! readInt(i, NULL))          { i->cmd = F_ERROR; return; }
-  if (! readShort(i, &i->cmdSize)) { i->cmd = F_ERROR; return; }
-  if (! readByte(i, &i->cmd))      { i->cmd = F_ERROR; return; }
+  if (! readInt(i, NULL, false))          { i->cmd = F_ERROR; return; }
+  if (! readShort(i, &i->cmdSize, false)) { i->cmd = F_ERROR; return; }
+  if (! readByte(i, &i->cmd, false))      { i->cmd = F_ERROR; return; }
 }
 
 bool

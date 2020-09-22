@@ -15,5 +15,9 @@ typedef struct In {
 } In;
 
 void advance(In *, int);
+bool readByte(In *, uint8_t *, bool);
+bool readShort(In *, int16_t *, bool);
+bool readInt(In *, int *, bool);
+bool readFloat(In *, float *, bool);
 bool input(In *);
 In makeIn(void);
