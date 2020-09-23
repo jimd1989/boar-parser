@@ -44,10 +44,6 @@ static const ArgType SIG_UF_ARGS[1] = {ARG_UFLOAT};
 static const ArgType SIG_UI_UF_ARGS[3] = {ARG_UINT, ARG_UFLOAT};
 #define SIG_UI_UF {2, 2, SIG_UI_UF_ARGS, NULL} 
 
-/* Sig expecting int+ float+ float+ */
-static const ArgType SIG_UI_UF_UF_ARGS[3] = {ARG_UINT, ARG_UFLOAT, ARG_UFLOAT};
-#define SIG_UI_UF_UF {3, 2, SIG_UI_UF_UF_ARGS, SIG_ZERO_DEFS} 
-
 /* Sig expecting int+ text */
 static const ArgType SIG_UI_T_ARGS[2] = {ARG_UINT, ARG_TEXT};
 #define SIG_UI_T {2, 2, SIG_UI_T_ARGS, NULL}
@@ -104,7 +100,7 @@ static const Sig SIG_PURE[SIZE_FS] = {
   SIG_NULL,       /* Q */
   SIG_UI_T,       /* R */
   SIG_NULL,       /* S */
-  SIG_UI_UF_UF,   /* T */
+  SIG_UI_UF,      /* T */
   SIG_NULL,       /* U */
   SIG_NULL,       /* V */
   SIG_NULL,       /* W */
@@ -136,7 +132,7 @@ static const Sig SIG_PURE[SIZE_FS] = {
   SIG_NULL,       /* q */
   SIG_UI_UF,      /* r */
   SIG_UI_UF,      /* s */
-  SIG_UI_UF_UF,   /* t */
+  SIG_UI_UF,      /* t */
   SIG_NULL,       /* u */
   SIG_NULL,       /* v */
   SIG_UI_T,       /* w */

@@ -259,7 +259,7 @@ touch(ArgVal *as, Out *o) {
 
 /* Write the t command to boar. */
 
-  int16_t size = (sizeof(uint8_t) * 2) + (sizeof(float) * 2);
+  int16_t size = (sizeof(uint8_t) * 2) + sizeof(float);
 
   _O(boundI(0, SIZE_OSCS, as[1].i));
   _O(boundF(0.0f, 1.0f, as[2].f));
@@ -268,7 +268,6 @@ touch(ArgVal *as, Out *o) {
   _O(writeByte(o, (uint8_t)as[0].i));
   _O(writeByte(o, as[1].i));
   _O(writeFloat(o, as[2].f));
-  _O(writeFloat(o, as[3].f));
 
   return true;
 }
@@ -278,14 +277,13 @@ tune(ArgVal *as, Out *o) {
 
 /* Write the T command to boar. */
 
-  int16_t size = (sizeof(uint8_t) * 2) + (sizeof(float) * 2);
+  int16_t size = (sizeof(uint8_t) * 2) + sizeof(float);
 
   _O(boundI(0, MIDI_MAX, as[1].i));
   _O(writeHead(o, size));
   _O(writeByte(o, (uint8_t)as[0].i));
   _O(writeByte(o, as[1].i));
   _O(writeFloat(o, as[2].f));
-  _O(writeFloat(o, as[3].f));
 
   return true;
 }
