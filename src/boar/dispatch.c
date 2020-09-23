@@ -1,3 +1,6 @@
+/* This module makes use of the guard macro _O. Please refer to control.h for
+ * more information. */
+
 #include <err.h>
 #include <stdbool.h>
 #include <stdint.h>
@@ -6,7 +9,19 @@
 #include "../constants/funcs.h"
 #include "../constants/magic.h"
 #include "../constants/sizes.h"
+#include "control.h"
 #include "input.h"
+
+static bool
+runNote(In *i) {
+  uint8_t note = 0;
+  uint8_t vel = 0;
+  _O(readByte(i, &note, true));
+  _O(readByte(i, &vel, true));
+  if (vel == 0) { warnx("Note %d turned off", note); }
+  else          { warnx("Note %d turned on with %d velocity", note, vel); }
+  return true;
+}
 
 static bool
 runEcho(In *i) {
@@ -32,9 +47,9 @@ runQuit(In *i) {
 
 static bool
 runLoudness(In *i) {
-  float *fx = (float *)i->head;
-  warnx("Loudness run with %f", *fx);
-  advance(i, sizeof(float));
+  float vol = 0.0f;
+  _O(readFloat(i, &vol, true));
+  warnx("l run with %f", vol);
   return true;
 }
 
@@ -42,8 +57,7 @@ bool
 dispatch(In *i) {
   Fn f = i->cmd;
   bool r =
-    f == F_NOTE_ON      ? false          :
-    f == F_NOTE_OFF     ? false          :
+    f == F_NOTE_ON      ? runNote(i)     :
     f == F_ATTACK       ? false          :
     f == F_ATTACK_WAVE  ? false          :
     f == F_DECAY        ? false          :

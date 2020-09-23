@@ -31,8 +31,8 @@ advance(In *i, int n) {
 
 bool
 readByte(In *i, uint8_t *x, bool cmd) {
-  if ((int)sizeof(*x) > i->size)           { error(); }
-  if (cmd && (int)sizeof(*x) > i->cmdSize) { error(); }
+  if ((int)sizeof(*x) > i->size)           { error(); return false; }
+  if (cmd && (int)sizeof(*x) > i->cmdSize) { error(); return false; }
   if (x != NULL)                           { *x = *i->head; }
   advance(i, sizeof(*x));
   return true;
@@ -40,18 +40,19 @@ readByte(In *i, uint8_t *x, bool cmd) {
 bool
 readShort(In *i, int16_t *x, bool cmd) {
   int16_t *xs = (int16_t *)i->head;
-  if ((int)sizeof(*x) > i->size)           { error(); }
-  if (cmd && (int)sizeof(*x) > i->cmdSize) { error(); }
+  if ((int)sizeof(*x) > i->size)           { error(); return false; }
+  if (cmd && (int)sizeof(*x) > i->cmdSize) { error(); return false; }
   if (x != NULL)                           { *x = *xs; }
   advance(i, sizeof(*x));
+  i->cmdSize += sizeof(*x); /* undoing subtraction in advance() */
   return true;
 }
 
 bool
 readInt(In *i, int *x, bool cmd) {
   int *xs = (int *)i->head;
-  if ((int)sizeof(*x) > i->size)           { error(); }
-  if (cmd && (int)sizeof(*x) > i->cmdSize) { error(); }
+  if ((int)sizeof(*x) > i->size)           { error(); return false; }
+  if (cmd && (int)sizeof(*x) > i->cmdSize) { error(); return false; }
   if (x != NULL)                           { *x = *xs; }
   advance(i, sizeof(*x));
   return true;
@@ -60,8 +61,8 @@ readInt(In *i, int *x, bool cmd) {
 bool
 readFloat(In *i, float *x, bool cmd) {
   float *xs = (float *)i->head;
-  if ((int)sizeof(*x) > i->size)           { error(); }
-  if (cmd && (int)sizeof(*x) > i->cmdSize) { error(); }
+  if ((int)sizeof(*x) > i->size)           { error(); return false; }
+  if (cmd && (int)sizeof(*x) > i->cmdSize) { error(); return false; }
   if (x != NULL)                           { *x = *xs; }
   advance(i, sizeof(*x));
   return true;
@@ -83,6 +84,7 @@ readNote(In *i) {
      * 2. Pass along non-matching MIDI */
     i->cmd = F_ERROR; (void)readShort(i, NULL, false); return; 
   }
+  i->cmdSize = 2;
   i->cmd = F_NOTE_ON;
 }
 

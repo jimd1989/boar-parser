@@ -1,9 +1,9 @@
+/* This module makes use of the guard macro _O. Please refer to control.h for
+ * more information. */
+
 #include <err.h>
 #include <stdbool.h>
 #include <stdint.h>
-
-/* This module makes use of the guard macro _O. Please refer to control.h for
- * more information. */
 
 #include "../constants/funcs.h"
 #include "../constants/magic.h"
