@@ -189,18 +189,16 @@ amplitude(ArgVal *as, Out *o) {
 
 /* Write the L command to boar. */
 
-  int16_t size = (sizeof(uint8_t) * 2) + (sizeof(float) * 3);
+  int16_t size = (sizeof(uint8_t) * 2) + sizeof(float);
 
   _O(boundI(0, SIZE_OSCS, as[1].i));
   _O(boundF(0.0f, 1.0f, as[2].f));
   _O(boundF(0.0f, 1.0f, as[3].f));
-  _O(boundF(0.0f, 1.0f, as[4].f));
   _O(writeHead(o, size));
   _O(writeByte(o, (uint8_t)as[0].i));
   _O(writeByte(o, as[1].i));
   _O(writeFloat(o, as[2].f));
   _O(writeFloat(o, as[3].f));
-  _O(writeFloat(o, as[4].f));
 
   return true;
 }
@@ -229,15 +227,14 @@ pitch(ArgVal *as, Out *o) {
 
 /* Write the p command to boar. */
 
-  int16_t size = (sizeof(uint8_t) * 3) + (sizeof(float) * 2);
+  int16_t size = (sizeof(uint8_t) * 3) + sizeof(float);
 
   _O(boundI(0, SIZE_OSCS, as[1].i));
   _O(writeHead(o, size));
   _O(writeByte(o, (uint8_t)as[0].i));
   _O(writeByte(o, as[1].i));
   _O(writeFloat(o, as[2].f));
-  _O(writeFloat(o, as[3].f));
-  _O(writeEnum(o, as[4].s));
+  _O(writeEnum(o, as[3].s));
 
   return true;
 }

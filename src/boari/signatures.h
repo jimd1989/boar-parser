@@ -29,7 +29,6 @@ typedef struct Sig {
 
 /* Default argument arrays to be used across Sigs */
 static const ArgVal SIG_ZERO_DEFS[1] = {{0}};
-static const ArgVal SIG_ZERO_TWO_DEFS[2] = {{0}, {0}};
 static const ArgVal SIG_ONE_DEFS[1] = {{NUM_ONE}};
 
 /* Sig expecting any input */
@@ -71,13 +70,13 @@ static const ArgVal SIG_NOTE_OFF_DEFS[1] = {{1}};
 
 /* Sig for set amplitude function */
 static const ArgType
-SIG_AMPLITUDE_ARGS[4] = {ARG_UINT, ARG_UFLOAT, ARG_UFLOAT, ARG_FLOAT};
-#define SIG_AMPLITUDE {4, 2, SIG_AMPLITUDE_ARGS, SIG_ZERO_TWO_DEFS}
+SIG_AMPLITUDE_ARGS[3] = {ARG_UINT, ARG_UFLOAT, ARG_FLOAT};
+#define SIG_AMPLITUDE {3, 2, SIG_AMPLITUDE_ARGS, SIG_ZERO_DEFS}
 
 /* Sig for set pitch function */
 static const ArgType
-SIG_PITCH_ARGS[4] = {ARG_UINT, ARG_UFLOAT, ARG_UFLOAT, ARG_TEXT};
-#define SIG_PITCH {4, 2, SIG_PITCH_ARGS, SIG_ZERO_TWO_DEFS}
+SIG_PITCH_ARGS[3] = {ARG_UINT, ARG_UFLOAT, ARG_TEXT};
+#define SIG_PITCH {3, 2, SIG_PITCH_ARGS, SIG_ZERO_DEFS}
 
 /* There are three alphabets representing boar commands: A/A./A:
  * When a command of any of these forms is encountered, its respective signature
