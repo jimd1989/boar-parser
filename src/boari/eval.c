@@ -104,14 +104,13 @@ setEnv(ArgVal *as, Out *o) {
 
 /* Write an envelope value command to boar: a, d, r, s */
 
-  int16_t size = (sizeof(uint8_t) * 2) + (sizeof(float) * 2);
+  int16_t size = (sizeof(uint8_t) * 2) + sizeof(float);
 
   _O(boundI(0, SIZE_ENVS, as[1].i));
   _O(writeHead(o, size));
   _O(writeByte(o, (uint8_t)as[0].i));
   _O(writeByte(o, as[1].i));
   _O(writeFloat(o, as[2].f));
-  _O(writeFloat(o, as[3].f));
 
   return true;
 }

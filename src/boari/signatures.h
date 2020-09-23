@@ -40,6 +40,10 @@ static const ArgType SIG_ANY_ARGS[1] = {ARG_ANY};
 static const ArgType SIG_UF_ARGS[1] = {ARG_UFLOAT};
 #define SIG_UF {1, 1, SIG_UF_ARGS, NULL}
 
+/* Sig expecting int+ float+ */
+static const ArgType SIG_UI_UF_ARGS[3] = {ARG_UINT, ARG_UFLOAT};
+#define SIG_UI_UF {2, 2, SIG_UI_UF_ARGS, NULL} 
+
 /* Sig expecting int+ float+ float+ */
 static const ArgType SIG_UI_UF_UF_ARGS[3] = {ARG_UINT, ARG_UFLOAT, ARG_UFLOAT};
 #define SIG_UI_UF_UF {3, 2, SIG_UI_UF_UF_ARGS, SIG_ZERO_DEFS} 
@@ -113,10 +117,10 @@ static const Sig SIG_PURE[SIZE_FS] = {
   SIG_NULL,       /* ignored */
   SIG_NULL,       /* ignored */
   SIG_NULL,       /* ignored */
-  SIG_UI_UF_UF,   /* a */
+  SIG_UI_UF,      /* a */
   SIG_NULL,       /* b */
   SIG_NULL,       /* c */
-  SIG_UI_UF_UF,   /* d */
+  SIG_UI_UF,      /* d */
   SIG_ENV_ASSIGN, /* e */
   SIG_NULL,       /* f */
   SIG_NULL,       /* g */
@@ -130,8 +134,8 @@ static const Sig SIG_PURE[SIZE_FS] = {
   SIG_NOTE_OFF,   /* o */
   SIG_PITCH,      /* p */
   SIG_NULL,       /* q */
-  SIG_UI_UF_UF,   /* r */
-  SIG_UI_UF_UF,   /* s */
+  SIG_UI_UF,      /* r */
+  SIG_UI_UF,      /* s */
   SIG_UI_UF_UF,   /* t */
   SIG_NULL,       /* u */
   SIG_NULL,       /* v */
