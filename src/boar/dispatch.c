@@ -42,9 +42,27 @@ bool
 dispatch(In *i) {
   Fn f = i->cmd;
   bool r =
-    f == F_ECHO     ? runEcho(i)     :
-    f == F_LOUDNESS ? runLoudness(i) :
-    f == F_QUIT     ? runQuit(i)     : false;
+    f == F_NOTE_ON      ? false          :
+    f == F_NOTE_OFF     ? false          :
+    f == F_ATTACK       ? false          :
+    f == F_ATTACK_WAVE  ? false          :
+    f == F_DECAY        ? false          :
+    f == F_DECAY_WAVE   ? false          :
+    f == F_ENV_ASSIGN   ? false          :
+    f == F_ECHO         ? runEcho(i)     :
+    f == F_KEY_CURVE    ? false          :
+    f == F_LOUDNESS     ? runLoudness(i) :
+    f == F_AMPLITUDE    ? false          :
+    f == F_MODULATE     ? false          :
+    f == F_ENV_LOOP     ? false          :
+    f == F_PITCH        ? false          :
+    f == F_QUIT         ? runQuit(i)     :
+    f == F_RELEASE      ? false          :
+    f == F_RELEASE_WAVE ? false          :
+    f == F_SUSTAIN      ? false          :
+    f == F_TOUCH        ? false          :
+    f == F_TUNE         ? false          :
+    f == F_WAVE         ? false          : false;
   if (! r) { advance(i, i->cmdSize); }
   return r;
 }

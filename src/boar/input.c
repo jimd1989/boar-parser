@@ -31,18 +31,18 @@ advance(In *i, int n) {
 
 bool
 readByte(In *i, uint8_t *x, bool cmd) {
-  if ((int)sizeof(*x) > i->size)        { error(); }
-  if (cmd && (int)sizeof(*x) > i->size) { error(); }
-  if (x != NULL)                        { *x = *i->head; }
+  if ((int)sizeof(*x) > i->size)           { error(); }
+  if (cmd && (int)sizeof(*x) > i->cmdSize) { error(); }
+  if (x != NULL)                           { *x = *i->head; }
   advance(i, sizeof(*x));
   return true;
 }
 bool
 readShort(In *i, int16_t *x, bool cmd) {
   int16_t *xs = (int16_t *)i->head;
-  if ((int)sizeof(*x) > i->size)        { error(); }
-  if (cmd && (int)sizeof(*x) > i->size) { error(); }
-  if (x != NULL)                        { *x = *xs; }
+  if ((int)sizeof(*x) > i->size)           { error(); }
+  if (cmd && (int)sizeof(*x) > i->cmdSize) { error(); }
+  if (x != NULL)                           { *x = *xs; }
   advance(i, sizeof(*x));
   return true;
 }
@@ -50,9 +50,9 @@ readShort(In *i, int16_t *x, bool cmd) {
 bool
 readInt(In *i, int *x, bool cmd) {
   int *xs = (int *)i->head;
-  if ((int)sizeof(*x) > i->size)        { error(); }
-  if (cmd && (int)sizeof(*x) > i->size) { error(); }
-  if (x != NULL)                        { *x = *xs; }
+  if ((int)sizeof(*x) > i->size)           { error(); }
+  if (cmd && (int)sizeof(*x) > i->cmdSize) { error(); }
+  if (x != NULL)                           { *x = *xs; }
   advance(i, sizeof(*x));
   return true;
 }
@@ -60,9 +60,9 @@ readInt(In *i, int *x, bool cmd) {
 bool
 readFloat(In *i, float *x, bool cmd) {
   float *xs = (float *)i->head;
-  if ((int)sizeof(*x) > i->size)        { error(); }
-  if (cmd && (int)sizeof(*x) > i->size) { error(); }
-  if (x != NULL)                        { *x = *xs; }
+  if ((int)sizeof(*x) > i->size)           { error(); }
+  if (cmd && (int)sizeof(*x) > i->cmdSize) { error(); }
+  if (x != NULL)                           { *x = *xs; }
   advance(i, sizeof(*x));
   return true;
 }
@@ -78,6 +78,9 @@ readNote(In *i) {
   if (! readByte(i, &b, false)) { i->cmd = F_ERROR; return; }
   b -= MIDI_NOTE_ON;
   if (b != i->chan) { 
+    /* Currently dump all non-matching MIDI. Need options for:
+     * 1. Listen on all MIDI channels
+     * 2. Pass along non-matching MIDI */
     i->cmd = F_ERROR; (void)readShort(i, NULL, false); return; 
   }
   i->cmd = F_NOTE_ON;

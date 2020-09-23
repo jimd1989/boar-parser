@@ -352,7 +352,7 @@ eval(Parse *p, Out *o) {
     f == F_SUSTAIN      ? setEnv(as, o)     :
     f == F_TOUCH        ? touch(as, o)      :
     f == F_TUNE         ? tune(as, o)       :
-    f == F_WAVE         ? setOscText(as,o)  : false;
+    f == F_WAVE         ? setOscText(as, o) : false;
 
   return r;
 }
