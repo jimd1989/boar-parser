@@ -15,7 +15,7 @@ typedef enum Fn {
   F_ATTACK_WAVE,  /* A - env num, wave name                       */
   F_DECAY,        /* d - env num, val                             */
   F_DECAY_WAVE,   /* D - env num, wave name                       */
-  F_ENV_ASSIGN,   /* e - env num, osc num | depth                !*/
+  F_ENV_ASSIGN,   /* e - env num, osc num | target depth          */
   F_ECHO,         /* E - anything (special condition?)            */
   F_KEY_CURVE,    /* k - osc num, wave name                       */
   F_LOUDNESS,     /* l - value                                    */

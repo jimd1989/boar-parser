@@ -152,16 +152,17 @@ assignEnv(ArgVal *as, Out *o) {
 
 /* Write the e command to boar. */
 
-  int16_t size = (sizeof(uint8_t) * 3) + sizeof(float);
+  int16_t size = (sizeof(uint8_t) * 4) + sizeof(float);
 
   _O(boundI(0, SIZE_ENVS, as[1].i));
   _O(boundI(0, SIZE_OSCS, as[2].i));
-  _O(boundF(0.0f, 1.0f, as[3].f));
+  _O(boundF(0.0f, 1.0f, as[4].f));
   _O(writeHead(o, size));
   _O(writeByte(o, (uint8_t)as[0].i));
   _O(writeByte(o, as[1].i));
   _O(writeByte(o, as[2].i));
-  _O(writeFloat(o, as[3].f));
+  _O(writeEnum(o, as[3].s));
+  _O(writeFloat(o, as[4].f));
 
   return true;
 }

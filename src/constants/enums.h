@@ -1,10 +1,10 @@
 #pragma once
 
-/* Numerical equivalents of user-provided text tokens. */
-
-/* TODO: make it so that no enum can be a synonym for another, like how
- * 'flat' and 'no' are both zero valued. This may make it painful to fit all
- * textual representations inside a single byte, however. */
+/* Numerical equivalents of user-provided text tokens. Ideally these values
+ * would all be placed in a single enum range, allowing for stronger type
+ * checking, but the default argument behavior of the boari Sig struct demands
+ * that unspecified text be a null pointer. Thus every enum must alias one of
+ * its members against zero. */
 
 #include <limits.h>
 

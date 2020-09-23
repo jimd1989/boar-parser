@@ -49,8 +49,10 @@ static const ArgType SIG_UI_T_ARGS[2] = {ARG_UINT, ARG_TEXT};
 #define SIG_UI_T {2, 2, SIG_UI_T_ARGS, NULL}
 
 /* Sig for envelope functions */
-static const ArgType SIG_ENV_ASSIGN_ARGS[3] = {ARG_UINT, ARG_UINT, ARG_UFLOAT};
-#define SIG_ENV_ASSIGN {3, 2, SIG_ENV_ASSIGN_ARGS, SIG_ONE_DEFS}
+static const
+ArgType SIG_ENV_ASSIGN_ARGS[4] = {ARG_UINT, ARG_UINT, ARG_TEXT, ARG_UFLOAT};
+static const ArgVal SIG_ENV_ASSIGN_DEFS[2] = {{0}, {NUM_ONE}};
+#define SIG_ENV_ASSIGN {4, 2, SIG_ENV_ASSIGN_ARGS, SIG_ENV_ASSIGN_DEFS}
 
 /* Sig for modulate function */
 static const ArgType
