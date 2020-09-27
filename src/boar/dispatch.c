@@ -12,8 +12,14 @@
 #include "control.h"
 #include "input.h"
 
+static bool note(In *);
+static bool echo(In *);
+static bool loudness(In *);
+static bool quit(In *);
+static bool env(In *);
+
 static bool
-runNote(In *i) {
+note(In *i) {
   uint8_t note = 0;
   uint8_t vel = 0;
   _O(readByte(i, &note, true));
@@ -24,7 +30,7 @@ runNote(In *i) {
 }
 
 static bool
-runEcho(In *i) {
+echo(In *i) {
   fwrite(i->head, 1, i->cmdSize, stdout);
   fflush(stdout);
   advance(i, i->cmdSize);
@@ -32,7 +38,15 @@ runEcho(In *i) {
 }
 
 static bool
-runQuit(In *i) {
+loudness(In *i) {
+  float vol = 0.0f;
+  _O(readFloat(i, &vol, true));
+  warnx("l run with %f", vol);
+  return true;
+}
+
+static bool
+quit(In *i) {
   uint8_t buf[7] = {0};
   int *w = (int *)buf;
   int16_t *sz = (int16_t *)(buf + sizeof(*w));
@@ -46,10 +60,17 @@ runQuit(In *i) {
 }
 
 static bool
-runLoudness(In *i) {
-  float vol = 0.0f;
-  _O(readFloat(i, &vol, true));
-  warnx("l run with %f", vol);
+env(In *i) {
+  uint8_t e = 0;
+  float f = 0.0f;
+  char c = 
+    i->cmd == F_ATTACK  ? 'a' :
+    i->cmd == F_DECAY   ? 'd' :
+    i->cmd == F_RELEASE ? 'r' :
+    i->cmd == F_SUSTAIN ? 's' : '?';
+  _O(readByte(i, &e, true));
+  _O(readFloat(i, &f, true));
+  warnx("Set env no %d's %c to %f", e, c, f);
   return true;
 }
 
@@ -57,23 +78,23 @@ bool
 dispatch(In *i) {
   Fn f = i->cmd;
   bool r =
-    f == F_NOTE_ON      ? runNote(i)     :
-    f == F_ATTACK       ? false          :
+    f == F_NOTE_ON      ? note(i)        :
+    f == F_ATTACK       ? env(i)         :
     f == F_ATTACK_WAVE  ? false          :
-    f == F_DECAY        ? false          :
+    f == F_DECAY        ? env(i)         :
     f == F_DECAY_WAVE   ? false          :
     f == F_ENV_ASSIGN   ? false          :
-    f == F_ECHO         ? runEcho(i)     :
+    f == F_ECHO         ? echo(i)        :
     f == F_KEY_CURVE    ? false          :
-    f == F_LOUDNESS     ? runLoudness(i) :
+    f == F_LOUDNESS     ? loudness(i)    :
     f == F_AMPLITUDE    ? false          :
     f == F_MODULATE     ? false          :
     f == F_ENV_LOOP     ? false          :
     f == F_PITCH        ? false          :
-    f == F_QUIT         ? runQuit(i)     :
-    f == F_RELEASE      ? false          :
+    f == F_QUIT         ? quit(i)        :
+    f == F_RELEASE      ? env(i)         :
     f == F_RELEASE_WAVE ? false          :
-    f == F_SUSTAIN      ? false          :
+    f == F_SUSTAIN      ? env(i)         :
     f == F_TOUCH        ? false          :
     f == F_TUNE         ? false          :
     f == F_WAVE         ? false          : false;

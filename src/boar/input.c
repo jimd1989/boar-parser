@@ -44,7 +44,6 @@ readShort(In *i, int16_t *x, bool cmd) {
   if (cmd && (int)sizeof(*x) > i->cmdSize) { error(); return false; }
   if (x != NULL)                           { *x = *xs; }
   advance(i, sizeof(*x));
-  i->cmdSize += sizeof(*x); /* undoing subtraction in advance() */
   return true;
 }
 
@@ -98,6 +97,7 @@ static void
 readBoar(In *i) {
   if (! readInt(i, NULL, false))          { i->cmd = F_ERROR; return; }
   if (! readShort(i, &i->cmdSize, false)) { i->cmd = F_ERROR; return; }
+  i->cmdSize +=2;                         /* Include size itself in size. */
   if (! readByte(i, &i->cmd, false))      { i->cmd = F_ERROR; return; }
 }
 

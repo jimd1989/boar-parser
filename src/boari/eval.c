@@ -29,6 +29,7 @@ static bool setEnvText(ArgVal *, Out *);
 static bool setOscText(ArgVal *, Out *);
 static bool pitch(ArgVal *, Out *);
 static bool quit(ArgVal *, Out *);
+static bool sustain(ArgVal *, Out *);
 static bool touch(ArgVal *, Out *);
 static bool tune(ArgVal *, Out *);
 static bool echo(ArgVal *, Parse *, Out *);
@@ -102,7 +103,7 @@ noteOff(ArgVal *as, Out *o) {
 static bool
 setEnv(ArgVal *as, Out *o) {
 
-/* Write an envelope value command to boar: a, d, r, s */
+/* Write an envelope value command to boar: a, d, r */
 
   int16_t size = (sizeof(uint8_t) * 2) + sizeof(float);
 
@@ -253,6 +254,23 @@ quit(ArgVal *as, Out *o) {
 }
 
 static bool
+sustain(ArgVal *as, Out *o) {
+
+/* Write the s command to boar. */
+
+  int16_t size = (sizeof(uint8_t) * 2) + sizeof(float);
+
+  _O(boundI(0, SIZE_ENVS, as[1].i));
+  _O(boundF(0.0f, 1.0f, as[2].f));
+  _O(writeHead(o, size));
+  _O(writeByte(o, (uint8_t)as[0].i));
+  _O(writeByte(o, as[1].i));
+  _O(writeFloat(o, as[2].f));
+
+  return true;
+}
+
+static bool
 touch(ArgVal *as, Out *o) {
 
 /* Write the t command to boar. */
@@ -349,7 +367,7 @@ eval(Parse *p, Out *o) {
     f == F_QUIT         ? quit(as, o)       :
     f == F_RELEASE      ? setEnv(as, o)     :
     f == F_RELEASE_WAVE ? setEnvText(as, o) :
-    f == F_SUSTAIN      ? setEnv(as, o)     :
+    f == F_SUSTAIN      ? sustain(as, o)    :
     f == F_TOUCH        ? touch(as, o)      :
     f == F_TUNE         ? tune(as, o)       :
     f == F_WAVE         ? setOscText(as, o) : false;
