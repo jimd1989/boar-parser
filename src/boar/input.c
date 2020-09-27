@@ -97,7 +97,7 @@ static void
 readBoar(In *i) {
   if (! readInt(i, NULL, false))          { i->cmd = F_ERROR; return; }
   if (! readShort(i, &i->cmdSize, false)) { i->cmd = F_ERROR; return; }
-  i->cmdSize +=2;                         /* Include size itself in size. */
+  i->cmdSize +=2;                         /* Undo readShort size reduction. */
   if (! readByte(i, &i->cmd, false))      { i->cmd = F_ERROR; return; }
 }
 

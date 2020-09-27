@@ -15,16 +15,23 @@
 static bool isAllRead(In *);
 static bool note(In *);
 static bool echo(In *);
+static bool env(In *);
+static bool envWave(In *);
 static bool loudness(In *);
 static bool quit(In *);
-static bool env(In *);
+
+static void
+readError(In *i) {
+  warnx("%d bytes unread in %d", i->cmdSize, i->cmd);
+}
 
 static bool
 isAllRead(In *i) {
 
 /* Ensure that the entire command was read before dispatching any actions. */
 
-  return i->cmdSize == 0;
+  if (i->cmdSize == 0) { return true; }
+  else                 { advance(i, i->cmdSize); readError(i); return false; }
 }
 
 static bool
@@ -44,6 +51,38 @@ echo(In *i) {
   fwrite(i->head, 1, i->cmdSize, stdout);
   fflush(stdout);
   advance(i, i->cmdSize);
+  return true;
+}
+
+static bool
+env(In *i) {
+  uint8_t e = 0;
+  float f = 0.0f;
+  char c = 
+    i->cmd == F_ATTACK  ? 'a' :
+    i->cmd == F_DECAY   ? 'd' :
+    i->cmd == F_RELEASE ? 'r' :
+    i->cmd == F_SUSTAIN ? 's' : '?';
+  _O(readByte(i, &e, true));
+  _O(readFloat(i, &f, true));
+  _O(isAllRead(i));
+  warnx("Set env no %d's %c to %f", e, c, f);
+  return true;
+}
+
+static bool
+envWave(In *i) {
+  uint8_t e = 0;
+  uint8_t w = 0;
+  char c = 
+    i->cmd == F_ATTACK_WAVE  ? 'A' :
+    i->cmd == F_DECAY_WAVE   ? 'D' :
+    i->cmd == F_RELEASE_WAVE ? 'R' : '?';
+  warnx("Reading wave");
+  _O(readByte(i, &e, true));
+  _O(readByte(i, &w, true));
+  _O(isAllRead(i));
+  warnx("Set env no %d's %c wave to %d", e, c, (int8_t)w);
   return true;
 }
 
@@ -70,31 +109,15 @@ quit(In *i) {
   return true;
 }
 
-static bool
-env(In *i) {
-  uint8_t e = 0;
-  float f = 0.0f;
-  char c = 
-    i->cmd == F_ATTACK  ? 'a' :
-    i->cmd == F_DECAY   ? 'd' :
-    i->cmd == F_RELEASE ? 'r' :
-    i->cmd == F_SUSTAIN ? 's' : '?';
-  _O(readByte(i, &e, true));
-  _O(readFloat(i, &f, true));
-  _O(isAllRead(i));
-  warnx("Set env no %d's %c to %f", e, c, f);
-  return true;
-}
-
 bool
 dispatch(In *i) {
   Fn f = i->cmd;
   bool r =
     f == F_NOTE_ON      ? note(i)        :
     f == F_ATTACK       ? env(i)         :
-    f == F_ATTACK_WAVE  ? false          :
+    f == F_ATTACK_WAVE  ? envWave(i)     :
     f == F_DECAY        ? env(i)         :
-    f == F_DECAY_WAVE   ? false          :
+    f == F_DECAY_WAVE   ? envWave(i)     :
     f == F_ENV_ASSIGN   ? false          :
     f == F_ECHO         ? echo(i)        :
     f == F_KEY_CURVE    ? false          :
@@ -105,7 +128,7 @@ dispatch(In *i) {
     f == F_PITCH        ? false          :
     f == F_QUIT         ? quit(i)        :
     f == F_RELEASE      ? env(i)         :
-    f == F_RELEASE_WAVE ? false          :
+    f == F_RELEASE_WAVE ? envWave(i)     :
     f == F_SUSTAIN      ? env(i)         :
     f == F_TOUCH        ? false          :
     f == F_TUNE         ? false          :

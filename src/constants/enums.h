@@ -20,10 +20,12 @@ typedef enum OnOff {
 
 typedef enum WaveType {
 
-/* Allows waves to be specified by name rather than numbers. */
+/* Allows waves to be specified by name rather than numbers. Because reverse
+ * waves are passed as negative enum values, and UCHAR_MAX is used to signal
+ * an unknown enum value, no wave can be represented by 1, as -1 = UCHAR_MAX. */
 
   ENUM_FLAT = 0,
-  ENUM_SINE,
+  ENUM_SINE = 2,
   ENUM_SQUARE,
   ENUM_TRIANGLE,
   ENUM_RAMP,
