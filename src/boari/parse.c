@@ -164,7 +164,7 @@ backup(ArgVal *as, const Sig *g, int n) {
 
 /* If no token is provided in the user input, fall back upon the default value
  * offered by the Sig. */ 
-  
+
   as[n+1] = g->defaults[n - g->required];
 }
 

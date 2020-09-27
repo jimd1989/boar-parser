@@ -16,6 +16,7 @@ static bool isAllRead(In *);
 static bool note(In *);
 static bool echo(In *);
 static bool env(In *);
+static bool envAssign(In *);
 static bool envWave(In *);
 static bool loudness(In *);
 static bool quit(In *);
@@ -31,7 +32,7 @@ isAllRead(In *i) {
 /* Ensure that the entire command was read before dispatching any actions. */
 
   if (i->cmdSize == 0) { return true; }
-  else                 { advance(i, i->cmdSize); readError(i); return false; }
+  else                 { readError(i); return false; }
 }
 
 static bool
@@ -67,6 +68,21 @@ env(In *i) {
   _O(readFloat(i, &f, true));
   _O(isAllRead(i));
   warnx("Set env no %d's %c to %f", e, c, f);
+  return true;
+}
+
+static bool
+envAssign(In *i) {
+  uint8_t e = 0;
+  uint8_t o = 0;
+  uint8_t t = 0;
+  float f = 0.0f;
+  _O(readByte(i, &e, true));
+  _O(readByte(i, &o, true));
+  _O(readByte(i, &t, true));
+  _O(readFloat(i, &f, true));
+  _O(isAllRead(i));
+  warnx("Assigned env %d to osc %d's %d at depth %f", e, o, t, f);
   return true;
 }
 
@@ -118,7 +134,7 @@ dispatch(In *i) {
     f == F_ATTACK_WAVE  ? envWave(i)     :
     f == F_DECAY        ? env(i)         :
     f == F_DECAY_WAVE   ? envWave(i)     :
-    f == F_ENV_ASSIGN   ? false          :
+    f == F_ENV_ASSIGN   ? envAssign(i)   :
     f == F_ECHO         ? echo(i)        :
     f == F_KEY_CURVE    ? false          :
     f == F_LOUDNESS     ? loudness(i)    :

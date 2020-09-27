@@ -29,7 +29,7 @@ typedef enum ArgType {
   ARG_ANY    = ARG_ANYTHING                            /* any input       */
 } ArgType;
 
-typedef struct ArgVal {
+typedef union ArgVal {
 
 /* An ArgVal is the actual value of the parsed token, encoded as an int, float,
  * or string based upon its ArgType. */
