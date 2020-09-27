@@ -8,6 +8,7 @@
 #include "../constants/midi.h"
 #include "../constants/sizes.h"
 #include "dispatch.h"
+#include "dummy_dispatch.h"
 #include "input.h"
 
 static bool error(void);
