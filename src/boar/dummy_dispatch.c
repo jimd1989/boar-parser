@@ -26,6 +26,7 @@ static bool envLoop(In *);
 static bool pitch(In *);
 static bool quit(In *);
 static bool touch(In *);
+static bool tune(In *);
 
 static void
 readError(In *i) {
@@ -202,6 +203,17 @@ touch(In *i) {
   return true;
 }
 
+static bool
+tune(In *i) {
+  uint8_t n = 0;
+  float f = 0.0f;
+  _O(readByte(i, &n, true));
+  _O(readFloat(i, &f, true));
+  _O(isAllRead(i));
+  warnx("note no %d tuned offset %f", n, f);
+  return true;
+}
+
 bool
 dummyDispatch(In *i) {
   Fn f = i->cmd;
@@ -224,7 +236,7 @@ dummyDispatch(In *i) {
     f == F_RELEASE_WAVE ? envWave(i)   :
     f == F_SUSTAIN      ? env(i)       :
     f == F_TOUCH        ? touch(i)     :
-    f == F_TUNE         ? false        :
+    f == F_TUNE         ? tune(i)      :
     f == F_WAVE         ? false        : false;
   if (! r) { advance(i, i->cmdSize); }
   return r;
