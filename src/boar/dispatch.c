@@ -20,6 +20,7 @@ static bool envAssign(In *);
 static bool envWave(In *);
 static bool key(In *);
 static bool loudness(In *);
+static bool amplitude(In *);
 static bool quit(In *);
 
 static void
@@ -122,6 +123,18 @@ loudness(In *i) {
   return true;
 }
 
+static bool amplitude(In *i) {
+  uint8_t o = 0;
+  float f = 0.0f;
+  float b = 0.0f;
+  _O(readByte(i, &o, true));
+  _O(readFloat(i, &f, true));
+  _O(readFloat(i, &b, true));
+  _O(isAllRead(i));
+  warnx("Set osc no %d to amplitude %f balance %f", o, f, b);
+  return true;
+}
+
 static bool
 quit(In *i) {
   uint8_t buf[7] = {0};
@@ -149,7 +162,7 @@ dispatch(In *i) {
     f == F_ECHO         ? echo(i)        :
     f == F_KEY_CURVE    ? key(i)         :
     f == F_LOUDNESS     ? loudness(i)    :
-    f == F_AMPLITUDE    ? false          :
+    f == F_AMPLITUDE    ? amplitude(i)   :
     f == F_MODULATE     ? false          :
     f == F_ENV_LOOP     ? false          :
     f == F_PITCH        ? false          :

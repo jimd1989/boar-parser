@@ -190,7 +190,7 @@ amplitude(ArgVal *as, Out *o) {
 
 /* Write the L command to boar. */
 
-  int16_t size = (sizeof(uint8_t) * 2) + sizeof(float);
+  int16_t size = (sizeof(uint8_t) * 2) + (sizeof(float) * 2);
 
   _O(boundI(0, SIZE_OSCS, as[1].i));
   _O(boundF(0.0f, 1.0f, as[2].f));
