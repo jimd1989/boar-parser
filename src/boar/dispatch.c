@@ -1,3 +1,4 @@
+#include <err.h>
 #include <stdbool.h>
 
 #include "dispatch.h"
@@ -5,5 +6,6 @@
 
 bool
 dispatch(In *i) {
+  warnx("function %d", i->cmd);
   return true;
 }

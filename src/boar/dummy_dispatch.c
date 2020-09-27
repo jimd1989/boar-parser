@@ -27,6 +27,7 @@ static bool pitch(In *);
 static bool quit(In *);
 static bool touch(In *);
 static bool tune(In *);
+static bool wave(In *);
 
 static void
 readError(In *i) {
@@ -96,25 +97,25 @@ envAssign(In *i) {
 static bool
 envWave(In *i) {
   uint8_t e = 0;
-  uint8_t w = 0;
+  int8_t w = 0;
   char c = 
     i->cmd == F_ATTACK_WAVE  ? 'A' :
     i->cmd == F_DECAY_WAVE   ? 'D' :
     i->cmd == F_RELEASE_WAVE ? 'R' : '?';
   _O(readByte(i, &e, true));
-  _O(readByte(i, &w, true));
+  _O(readByte(i, (uint8_t *)&w, true));
   _O(isAllRead(i));
-  warnx("Set env no %d's %c wave to %d", e, c, (int8_t)w);
+  warnx("Set env no %d's %c wave to %d", e, c, w);
   return true;
 }
 
 static bool key(In *i) {
   uint8_t o = 0;
-  uint8_t w = 0;
+  int8_t w = 0;
   _O(readByte(i, &o, true));
-  _O(readByte(i, &w, true));
+  _O(readByte(i, (uint8_t *)&w, true));
   _O(isAllRead(i));
-  warnx("Set osc no %d's key curve to %d", o, (int8_t)w);
+  warnx("Set osc no %d's key curve to %d", o, w);
 
   return true;
 }
@@ -214,6 +215,17 @@ tune(In *i) {
   return true;
 }
 
+static bool
+wave(In *i) {
+  uint8_t o = 0;
+  int8_t w = 0;
+  _O(readByte(i, &o, true));
+  _O(readByte(i, (uint8_t *)&w, true));
+  _O(isAllRead(i));
+  warnx("osc no %d set to wave %d", o, w);
+  return true;
+}
+
 bool
 dummyDispatch(In *i) {
   Fn f = i->cmd;
@@ -237,7 +249,7 @@ dummyDispatch(In *i) {
     f == F_SUSTAIN      ? env(i)       :
     f == F_TOUCH        ? touch(i)     :
     f == F_TUNE         ? tune(i)      :
-    f == F_WAVE         ? false        : false;
+    f == F_WAVE         ? wave(i)      : false;
   if (! r) { advance(i, i->cmdSize); }
   return r;
 }
