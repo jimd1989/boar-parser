@@ -18,6 +18,7 @@ static bool echo(In *);
 static bool env(In *);
 static bool envAssign(In *);
 static bool envWave(In *);
+static bool key(In *);
 static bool loudness(In *);
 static bool quit(In *);
 
@@ -94,11 +95,21 @@ envWave(In *i) {
     i->cmd == F_ATTACK_WAVE  ? 'A' :
     i->cmd == F_DECAY_WAVE   ? 'D' :
     i->cmd == F_RELEASE_WAVE ? 'R' : '?';
-  warnx("Reading wave");
   _O(readByte(i, &e, true));
   _O(readByte(i, &w, true));
   _O(isAllRead(i));
   warnx("Set env no %d's %c wave to %d", e, c, (int8_t)w);
+  return true;
+}
+
+static bool key(In *i) {
+  uint8_t o = 0;
+  uint8_t w = 0;
+  _O(readByte(i, &o, true));
+  _O(readByte(i, &w, true));
+  _O(isAllRead(i));
+  warnx("Set osc no %d's key curve to %d", o, (int8_t)w);
+
   return true;
 }
 
@@ -136,7 +147,7 @@ dispatch(In *i) {
     f == F_DECAY_WAVE   ? envWave(i)     :
     f == F_ENV_ASSIGN   ? envAssign(i)   :
     f == F_ECHO         ? echo(i)        :
-    f == F_KEY_CURVE    ? false          :
+    f == F_KEY_CURVE    ? key(i)         :
     f == F_LOUDNESS     ? loudness(i)    :
     f == F_AMPLITUDE    ? false          :
     f == F_MODULATE     ? false          :
