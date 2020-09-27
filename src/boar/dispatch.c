@@ -22,6 +22,7 @@ static bool key(In *);
 static bool loudness(In *);
 static bool amplitude(In *);
 static bool modulate(In *);
+static bool envLoop(In *);
 static bool quit(In *);
 
 static void
@@ -151,6 +152,17 @@ static bool modulate(In *i) {
 }
 
 static bool
+envLoop(In *i) {
+  bool l = false;
+  uint8_t e = 0;
+  _O(readByte(i, &e, true));
+  _O(readByte(i, (uint8_t *)&l, true));
+  _O(isAllRead(i));
+  warnx("env %d is %s", e, l ? "looped" : "unlooped");
+  return true;
+}
+
+static bool
 quit(In *i) {
   uint8_t buf[7] = {0};
   int *w = (int *)buf;
@@ -179,7 +191,7 @@ dispatch(In *i) {
     f == F_LOUDNESS     ? loudness(i)    :
     f == F_AMPLITUDE    ? amplitude(i)   :
     f == F_MODULATE     ? modulate(i)    :
-    f == F_ENV_LOOP     ? false          :
+    f == F_ENV_LOOP     ? envLoop(i)     :
     f == F_PITCH        ? false          :
     f == F_QUIT         ? quit(i)        :
     f == F_RELEASE      ? env(i)         :
