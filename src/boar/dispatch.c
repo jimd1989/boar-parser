@@ -21,6 +21,7 @@ static bool envWave(In *);
 static bool key(In *);
 static bool loudness(In *);
 static bool amplitude(In *);
+static bool modulate(In *);
 static bool quit(In *);
 
 static void
@@ -135,6 +136,20 @@ static bool amplitude(In *i) {
   return true;
 }
 
+static bool modulate(In *i) {
+  uint8_t o1 = 0;
+  uint8_t o2 = 0;
+  float f = 0.0f;
+  uint8_t m = 0;
+  _O(readByte(i, &o1, true));
+  _O(readByte(i, &o2, true));
+  _O(readFloat(i, &f, true));
+  _O(readByte(i, &m, true));
+  _O(isAllRead(i));
+  warnx("osc %d modulates osc %d's %d at depth %f", o1, o2, m, f);
+  return true;
+}
+
 static bool
 quit(In *i) {
   uint8_t buf[7] = {0};
@@ -163,7 +178,7 @@ dispatch(In *i) {
     f == F_KEY_CURVE    ? key(i)         :
     f == F_LOUDNESS     ? loudness(i)    :
     f == F_AMPLITUDE    ? amplitude(i)   :
-    f == F_MODULATE     ? false          :
+    f == F_MODULATE     ? modulate(i)    :
     f == F_ENV_LOOP     ? false          :
     f == F_PITCH        ? false          :
     f == F_QUIT         ? quit(i)        :
