@@ -23,6 +23,7 @@ static bool loudness(In *);
 static bool amplitude(In *);
 static bool modulate(In *);
 static bool envLoop(In *);
+static bool pitch(In *);
 static bool quit(In *);
 
 static void
@@ -163,6 +164,19 @@ envLoop(In *i) {
 }
 
 static bool
+pitch(In *i) {
+  bool x = false;
+  uint8_t o = 0;
+  float f = 0.0f;
+  _O(readByte(i, &o, true));
+  _O(readFloat(i, &f, true));
+  _O(readByte(i, (uint8_t *)&x, true));
+  _O(isAllRead(i));
+  warnx("pitch of osc %d is %s %f", o, x ? "fixed at" : "adjusted by", f);
+  return true;
+}
+
+static bool
 quit(In *i) {
   uint8_t buf[7] = {0};
   int *w = (int *)buf;
@@ -192,7 +206,7 @@ dispatch(In *i) {
     f == F_AMPLITUDE    ? amplitude(i)   :
     f == F_MODULATE     ? modulate(i)    :
     f == F_ENV_LOOP     ? envLoop(i)     :
-    f == F_PITCH        ? false          :
+    f == F_PITCH        ? pitch(i)       :
     f == F_QUIT         ? quit(i)        :
     f == F_RELEASE      ? env(i)         :
     f == F_RELEASE_WAVE ? envWave(i)     :
