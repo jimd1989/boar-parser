@@ -12,6 +12,7 @@
 #include "control.h"
 #include "input.h"
 
+static bool isAllRead(In *);
 static bool note(In *);
 static bool echo(In *);
 static bool loudness(In *);
@@ -19,11 +20,20 @@ static bool quit(In *);
 static bool env(In *);
 
 static bool
+isAllRead(In *i) {
+
+/* Ensure that the entire command was read before dispatching any actions. */
+
+  return i->cmdSize == 0;
+}
+
+static bool
 note(In *i) {
   uint8_t note = 0;
   uint8_t vel = 0;
   _O(readByte(i, &note, true));
   _O(readByte(i, &vel, true));
+  _O(isAllRead(i));
   if (vel == 0) { warnx("Note %d turned off", note); }
   else          { warnx("Note %d turned on with %d velocity", note, vel); }
   return true;
@@ -41,6 +51,7 @@ static bool
 loudness(In *i) {
   float vol = 0.0f;
   _O(readFloat(i, &vol, true));
+  _O(isAllRead(i));
   warnx("l run with %f", vol);
   return true;
 }
@@ -70,6 +81,7 @@ env(In *i) {
     i->cmd == F_SUSTAIN ? 's' : '?';
   _O(readByte(i, &e, true));
   _O(readFloat(i, &f, true));
+  _O(isAllRead(i));
   warnx("Set env no %d's %c to %f", e, c, f);
   return true;
 }
