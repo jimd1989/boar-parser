@@ -25,6 +25,7 @@ static bool modulate(In *);
 static bool envLoop(In *);
 static bool pitch(In *);
 static bool quit(In *);
+static bool touch(In *);
 
 static void
 readError(In *i) {
@@ -190,6 +191,17 @@ quit(In *i) {
   return true;
 }
 
+static bool
+touch(In *i) {
+  uint8_t o = 0;
+  float f = 0.0f;
+  _O(readByte(i, &o, true));
+  _O(readFloat(i, &f, true));
+  _O(isAllRead(i));
+  warnx("osc no %d with touch sensitivity %f", o, f);
+  return true;
+}
+
 bool
 dummyDispatch(In *i) {
   Fn f = i->cmd;
@@ -211,7 +223,7 @@ dummyDispatch(In *i) {
     f == F_RELEASE      ? env(i)       :
     f == F_RELEASE_WAVE ? envWave(i)   :
     f == F_SUSTAIN      ? env(i)       :
-    f == F_TOUCH        ? false        :
+    f == F_TOUCH        ? touch(i)     :
     f == F_TUNE         ? false        :
     f == F_WAVE         ? false        : false;
   if (! r) { advance(i, i->cmdSize); }
