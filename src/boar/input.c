@@ -7,6 +7,7 @@
 #include "../constants/magic.h"
 #include "../constants/midi.h"
 #include "../constants/sizes.h"
+#include "config.h"
 #include "dispatch.h"
 #include "dummy_dispatch.h"
 #include "input.h"
@@ -163,11 +164,12 @@ input(In *i) {
 }
 
 In
-makeIn(void) {
+makeIn(InConfig c) {
 
 /* Initialize an input object. */
 
   In i = {0};
+  i.config = c;
 
   return i;
 }

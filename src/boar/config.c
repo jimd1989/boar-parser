@@ -10,18 +10,18 @@
 Config
 makeConfig(int argc, char **argv) {
   int n = 1;
-  Config c = {0};
-  c.chan = CONFIG_CHAN;
-  c.allChans = false;
-  c.echoNotes = false;
-  c.passNotes = false;
-  c.rate = CONFIG_RATE;
+  Config c = {{0}};
+  c.in.chan = CONFIG_CHAN;
+  c.in.allChans = false;
+  c.in.echoNotes = false;
+  c.in.passNotes = false;
+  c.audio.rate = CONFIG_RATE;
   for (; n < argc ; n++) {
-    if (STREQ(argv[n], "-chan"))      { c.chan = atoi(argv[++n]); }
-    else if (STREQ(argv[n], "-rate")) { c.rate = atoi(argv[++n]); }
-    else if (STREQ(argv[n], "-all"))  { c.allChans = true; }
-    else if (STREQ(argv[n], "-echo")) { c.echoNotes = true; }
-    else if (STREQ(argv[n], "-pass")) { c.passNotes = true; }
+    if (STREQ(argv[n], "-chan"))      { c.in.chan = atoi(argv[++n]); }
+    else if (STREQ(argv[n], "-rate")) { c.audio.rate = atoi(argv[++n]); }
+    else if (STREQ(argv[n], "-all"))  { c.in.allChans = true; }
+    else if (STREQ(argv[n], "-echo")) { c.in.echoNotes = true; }
+    else if (STREQ(argv[n], "-pass")) { c.in.passNotes = true; }
     else                              { warnx("unknown: %s", argv[n]); }
   }
   return c;

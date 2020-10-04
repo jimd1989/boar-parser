@@ -6,6 +6,7 @@
 #include <stdint.h>
 
 #include "../constants/sizes.h"
+#include "config.h"
 
 typedef struct In {
 
@@ -24,6 +25,7 @@ typedef struct In {
   int16_t         cmdSize;
   int             size;
   uint8_t       * head;
+  InConfig        config;
   uint8_t         buf[SIZE_OUT];
 } In;
 
@@ -33,4 +35,4 @@ bool readShort(In *, int16_t *, bool);
 bool readInt(In *, int *, bool);
 bool readFloat(In *, float *, bool);
 bool input(In *);
-In makeIn(void);
+In makeIn(InConfig);
