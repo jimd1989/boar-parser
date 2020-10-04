@@ -15,8 +15,8 @@ typedef struct Out {
  * current write position. When all values have been written, the entire
  * stretch of data is printed to stdout. */
 
-  uint8_t         buf[SIZE_OUT];
   uint8_t       * head;
+  uint8_t         buf[SIZE_OUT];
 } Out;
 
 bool writeInt(Out *, int n);

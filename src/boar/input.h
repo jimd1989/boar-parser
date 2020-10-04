@@ -19,12 +19,12 @@ typedef struct In {
  * The header, the size, and the function type are read in this module's input()
  * function. The parameters are evaluated in dispatch(). */
 
-  uint8_t         buf[SIZE_OUT];
-  uint8_t       * head;
-  int             size;
-  int             chan;
-  int16_t         cmdSize;
   uint8_t         cmd;
+  uint8_t         chan;
+  int16_t         cmdSize;
+  int             size;
+  uint8_t       * head;
+  uint8_t         buf[SIZE_OUT];
 } In;
 
 void advance(In *, int);

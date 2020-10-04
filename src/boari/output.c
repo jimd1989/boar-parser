@@ -112,7 +112,7 @@ makeOut(void) {
 
 /* Initialize an output stream writer. */
 
-  Out o = {{0}};
+  Out o = {0};
 
   o.head = o.buf;
 

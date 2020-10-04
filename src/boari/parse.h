@@ -25,8 +25,8 @@ typedef struct Parse {
 
   char          * buf;
   char          * head;
-  ArgVal          args[SIZE_ARGS];
   const Sig     * sig;
+  ArgVal          args[SIZE_ARGS];
 } Parse;
 
 void resetParse(Parse *);

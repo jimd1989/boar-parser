@@ -167,7 +167,7 @@ makeIn(void) {
 
 /* Initialize an input object. */
 
-  In i = {{0}};
+  In i = {0};
 
   return i;
 }
