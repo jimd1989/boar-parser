@@ -110,17 +110,7 @@ readNote(In *i) {
 
 /* Parse a MIDI note on/off event into a boar command. */
 
-  uint8_t b = 0;
-
-  if (! readByte(i, &b, false)) { i->cmd = F_ERROR; return; }
-  b -= MIDI_NOTE_ON;
-  if (b != i->chan) { 
-    /* Currently dump all non-matching MIDI. Need options for:
-     * 1. Listen on all MIDI channels
-     * 2. Pass along non-matching MIDI */
-    i->cmd = F_ERROR; (void)readShort(i, NULL, false); return; 
-  }
-  i->cmdSize = 2;
+  i->cmdSize = 3;
   i->cmd = F_NOTE_ON;
 }
 

@@ -8,11 +8,13 @@
 
 #include "../constants/funcs.h"
 #include "../constants/magic.h"
+#include "../constants/midi.h"
 #include "../constants/sizes.h"
 #include "control.h"
 #include "input.h"
 
 static bool isAllRead(In *);
+static void echoNote(uint8_t, uint8_t, uint8_t);
 static bool note(In *);
 static bool echo(In *);
 static bool env(In *);
@@ -46,19 +48,35 @@ isAllRead(In *i) {
   else                 { readError(i); return false; }
 }
 
+static void
+echoNote(uint8_t e, uint8_t n, uint8_t v) {
+
+/* Echo an input note back to stdout. */
+
+  uint8_t buf[3] = {0};
+  buf[0] = e; buf[1] = n ; buf[2] = v;
+  fwrite(buf, 1, 3, stdout);
+  fflush(stdout);
+}
+
 static bool
 note(In *i) {
 
 /* Turn a note on or off. */
 
-  uint8_t note = 0;
-  uint8_t vel = 0;
+  uint8_t e, n, v = 0;
 
-  _O(readByte(i, &note, true));
-  _O(readByte(i, &vel, true));
+  _O(readByte(i, &e, true));
+  _O(readByte(i, &n, true));
+  _O(readByte(i, &v, true));
   _O(isAllRead(i));
-  if (vel == 0) { warnx("Note %d turned off", note); }
-  else          { warnx("Note %d turned on with %d velocity", note, vel); }
+  if (i->config.echoNotes) { echoNote(e, n, v); }
+  if (! i->config.allChans && e - MIDI_NOTE_ON != i->config.chan) {
+    if (i->config.passNotes) { echoNote(e, n, v); }
+    return false;
+  }
+  if (v == 0) { warnx("Note %d turned off", n); }
+  else        { warnx("Note %d turned on with %d velocity", n, v); }
 
   return true;
 }

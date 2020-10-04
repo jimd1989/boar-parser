@@ -21,7 +21,6 @@ typedef struct In {
  * function. The parameters are evaluated in dispatch(). */
 
   uint8_t         cmd;
-  uint8_t         chan;
   int16_t         cmdSize;
   int             size;
   uint8_t       * head;
